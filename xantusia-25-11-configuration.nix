@@ -1,3 +1,7 @@
+# NixOS 25.11 + 580.142 = my own stable, minimal base
+# User apps: Nix profile + Devbox + Flatpak (Discover)
+# Inspired by Slackware: no break what works, update only where it matters.
+
 { config, pkgs, ... }:
 
 {
