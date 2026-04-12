@@ -1,8 +1,0 @@
-Name:               home-manager-path
-Store paths:        /nix/store/z38vhjh8x6a2kb8j0vqc6k884as472mv-home-manager-path
-
-Name:               zen-browser-flake
-Flake attribute:    packages.x86_64-linux.default
-Original flake URL: github:youwen5/zen-browser-flake
-Locked flake URL:   github:youwen5/zen-browser-flake/2c138beb648d1cbbfae76695a8230ee04e4db25a?narHash=sha256-sCokvdNvl8zIzsnjgG0TN5h3RUI7GJyWW9ErfmEj0rM%3D
-Store paths:        /nix/store/ma4jbfydhvcb4psxkzgg9ma85rfvlvqa-zen-browser-1.19.8b
