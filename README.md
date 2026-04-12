@@ -2,7 +2,7 @@
 
 💡 About this set up
 
-- Personal configuration of my NixOS environment featuring KDE Plasma 6 as main desktop, SDDM login manager with automatic login for user. It work with proprietary NVIDIA driver and full hardware acceleration for 32-bit support for gaming. The system is optimized for a desktop with TLP and thermald for power and thermal control, while disabling sleep functions. Feauturing Home Manager and full Steam configured with unfree packages are allowed. Nix garbage collection runs daily, and the Flakes activated for modern package management.
+- Personal configuration of my NixOS 25.11 environment featuring KDE Plasma 6 as main desktop and SDDM with automatic login. Powered by proprietary NVIDIA drivers with full hardware acceleration including 32-bit gaming support. Optimized for desktop use with TLP and thermald for power/thermal management, sleep functions disabled. Features Home Manager with pure apps only, unfree packages enabled, daily Nix garbage collection, Flakes activated, and services.flatpak.enable completely removed for 100% Nix purity. 
 
 ## 
 
