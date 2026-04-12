@@ -130,7 +130,7 @@
     AllowSuspendThenHibernate=no
   '';
 
-  # Virtualization & Flatpak
+  # Virtualization
   virtualisation.libvirtd.enable = true;
 
   # Steam
