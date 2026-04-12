@@ -1,6 +1,6 @@
-# NixOS 25.11 + 580.142 = my own stable, minimal base
-# User apps: Nix profile + Devbox + Flatpak (Discover)
-# Inspired by Slackware: no break what works, update only where it matters.
+# NixOS 25.11 + 580.142 = Stable, minimal base
+# User apps: Home Manager (home.nix = 100% pure)
+# Slackware philosophy: don't break what works
 
 { config, pkgs, ... }:
 
@@ -132,7 +132,6 @@
 
   # Virtualization & Flatpak
   virtualisation.libvirtd.enable = true;
-  services.flatpak.enable = true;
 
   # Steam
   nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (pkgs.lib.getName pkg) [ "steam" "steam-unwrapped" ];
