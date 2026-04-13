@@ -6,48 +6,54 @@
 
   home.enableNixpkgsReleaseCheck = false;
 
-  home.packages = with pkgs; [
-    # KDE
-    kdePackages.kolourpaint
-    kdePackages.yakuake  
-    kdePackages.filelight
-    kdePackages.sweeper
-    kdePackages.kcalc
-    kdePackages.ktorrent  
+  home.packages =
+    let
+      zen = import (builtins.fetchTarball "https://github.com/youwen5/zen-browser-flake/archive/master.tar.gz") {
+        inherit pkgs;
+      };
+    in
+    (with pkgs; [
+      # KDE
+      kdePackages.kolourpaint
+      kdePackages.filelight
+      kdePackages.ktorrent
+      kdePackages.yakuake      
+      kdePackages.sweeper
+      kdePackages.kcalc      
 
-    # Gaming/Streaming
-    fastfetch
-    steam
-    wine
-    bottles              
-    mangohud             
-    goverlay          
-    obs-studio          
+      # Gaming/Streaming
+      obs-studio
+      fastfetch
+      mangohud
+      goverlay
+      bottles
+      steam
+      wine    
+           
+      # Browsers
+      chromium
+      ferdium
+      discord      
+      brave      
 
-    # Browsers
-    discord
-    ferdium    
-    brave
-    chromium            
-  
+      # Dev/Productividad
+      devbox
+      gedit
+      fish
+      htop            
 
-    # Dev/Productividad
-    devbox
-    fish
-    htop
-    gedit               
-    youtube-music       
+      # Multimedia
+      youtube-music
+      unrar
+      vlc
 
-    # Multimedia
-    unrar
-    vlc                  
-
-    # VMs (GUI)
-    virt-manager        
-  ];
+      # VMs (GUI)
+      virt-manager
+    ]) ++ [ zen.default ];
 
   programs.home-manager.enable = true;
+  programs.firefox.enable = true;
   programs.google-chrome.enable = true;
-  
+
   home.stateVersion = "25.11";
 }
