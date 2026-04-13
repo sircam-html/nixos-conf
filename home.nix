@@ -40,7 +40,8 @@
       devbox
       gedit
       fish
-      htop            
+      htop
+      git
 
       # Multimedia
       youtube-music
