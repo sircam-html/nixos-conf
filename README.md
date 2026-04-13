@@ -8,6 +8,6 @@
 
 Adapt and learn! 🚀
 
-- Repo mirror: [Gitlab](https://gitlab.com/S1RCAM/personal-nix-configuration)
-- Repo mirror: [Codeberg](https://codeberg.org/SIRCAM/nixos-conf)
+- Repo mirror: [GitLab](https://gitlab.com/S1RCAM/personal-nix-configuration)
+- Repo mirror: [CodeBerg](https://codeberg.org/SIRCAM/nixos-conf)
 
