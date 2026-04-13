@@ -7,9 +7,14 @@
   home.enableNixpkgsReleaseCheck = false;
 
   home.packages =
+    # Zen Browser
     let
       zen = import (builtins.fetchTarball "https://github.com/youwen5/zen-browser-flake/archive/master.tar.gz") {
         inherit pkgs;
+      };
+      # Bottles override (remove warning popup)
+      bottlesNoWarning = pkgs.bottles.override {
+        removeWarningPopup = true;
       };
     in
     (with pkgs; [
@@ -17,24 +22,26 @@
       kdePackages.kolourpaint
       kdePackages.filelight
       kdePackages.ktorrent
-      kdePackages.yakuake      
+      kdePackages.yakuake
       kdePackages.sweeper
-      kdePackages.kcalc      
+      kdePackages.kcalc
 
       # Gaming/Streaming
       obs-studio
       fastfetch
       mangohud
       goverlay
-      bottles
+      bottlesNoWarning  # ← REEMPLAZA bottles
+
+      heroic
       steam
-      wine    
-           
+      wine
+
       # Browsers
       chromium
       ferdium
-      discord      
-      brave      
+      discord
+      brave
 
       # Dev/Productividad
       devbox
