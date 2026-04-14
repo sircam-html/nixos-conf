@@ -1,7 +1,3 @@
-# NixOS 25.11 + NVIDIA-SMI 580.142 = Stable, minimal base
-# User apps: Home Manager (home.nix = 100% pure)
-# Slackware philosophy: don't break what works
-
 { config, pkgs, ... }:
 
 {
