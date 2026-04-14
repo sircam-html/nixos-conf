@@ -27,12 +27,10 @@
       kdePackages.kcalc
 
       # Gaming/Streaming
+      bottlesNoWarning
       obs-studio
-      fastfetch
       mangohud
       goverlay
-      bottlesNoWarning  # ← REEMPLAZA bottles
-
       heroic
       steam
       wine
@@ -43,7 +41,8 @@
       discord
       brave
 
-      # Dev/Productividad
+      # Dev/Productivity
+      fastfetch
       devbox
       gedit
       fish
