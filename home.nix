@@ -27,6 +27,7 @@
       kdePackages.kcalc
 
       # Gaming/Streaming
+      coolercontrol.coolercontrol-gui
       bottlesNoWarning
       obs-studio
       mangohud
