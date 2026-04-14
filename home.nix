@@ -44,6 +44,7 @@
       # Dev/Productivity
       fastfetch
       devbox
+      vscode
       gedit
       fish
       htop
