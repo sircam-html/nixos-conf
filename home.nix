@@ -19,6 +19,7 @@
     in
     (with pkgs; [
       # KDE
+      kdePackages.isoimagewriter
       kdePackages.kolourpaint
       kdePackages.filelight
       kdePackages.ktorrent
@@ -40,12 +41,10 @@
       chromium
       ferdium
       discord
-      brave
 
       # Dev/Productivity
       fastfetch
       devbox
-      vscode
       gedit
       fish
       htop

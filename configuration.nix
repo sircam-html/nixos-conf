@@ -65,45 +65,59 @@
     libvirt
   ];
 
-  # Graphics (FIXED)
-  hardware.graphics = {
-    enable = true;
-    enable32Bit = true;
-    extraPackages = with pkgs; [
-      libva-vdpau-driver
-      libvdpau-va-gl
-      nvidia-vaapi-driver
-    ];
-    extraPackages32 = with pkgs.pkgsi686Linux; [
-      libva-vdpau-driver
-      libvdpau-va-gl
-      nvidia-vaapi-driver
-    ];
-  };
+ # Graphics (FIXED)
+hardware.graphics = {
+  enable = true;
+  enable32Bit = true;
+  extraPackages = with pkgs; [
+    libva-vdpau-driver
+    libvdpau-va-gl
+    nvidia-vaapi-driver
+  ];
+  extraPackages32 = with pkgs.pkgsi686Linux; [
+    libva-vdpau-driver
+    libvdpau-va-gl
+    nvidia-vaapi-driver
+  ];
+};
 
-  hardware.nvidia = {
-    modesetting.enable = true;
-    nvidiaSettings = true;
-    open = false;
-    package = config.boot.kernelPackages.nvidiaPackages.stable;
-  };
+# Add overlay above this config (or in your top‑level `nixpkgs.overlays`)
+# nixpkgs.overlays = [
+#   (final: prev: let
+#     inherit (final.lib) fakeSha256;
+#     kp = final.boot.kernelPackages;
+#   in {
+#     nvidia580_142 = kp.nvidiaPackages.mkDriver {
+#       version = "580.142.01";
+#       sha256_64bit = fakeSha256;   # only x86‑64, no extra sha256 fields
+#     };
+#   })
+# ];
 
-  services.xserver = {
-    enable = true;
-    videoDrivers = [ "nvidia" ];
-  };
+hardware.nvidia = {
+  modesetting.enable = true;
+  nvidiaSettings = true;
+  open = false;
+  package = pkgs.kernelPackages.nvidia580_142;   # only 580.142, no "stable"
+};
 
-  environment.sessionVariables = {
-    GBM_BACKEND = "nvidia-drm";
-    LIBVA_DRIVER_NAME = "nvidia";
-    __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-    XDG_SESSION_TYPE = "wayland";
-  };
+services.xserver = {
+  enable = true;
+  videoDrivers = [ "nvidia" ];
+};
 
-  nixpkgs.config.nvidia.acceptLicense = true;
-  boot.kernelParams = [ "nvidia-drm.modeset=1" "amd_pstate=passive" ];
+environment.sessionVariables = {
+  GBM_BACKEND = "nvidia-drm";
+  LIBVA_DRIVER_NAME = "nvidia";
+  __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+  # Optional: remove this line if you’d rather choose Wayland/X11 in SDDM:
+  # XDG_SESSION_TYPE = "wayland";
+};
 
-  hardware.cpu.amd.updateMicrocode = true;
+nixpkgs.config.nvidia.acceptLicense = true;
+boot.kernelParams = [ "nvidia-drm.modeset=1" "amd_pstate=passive" ];
+
+hardware.cpu.amd.updateMicrocode = true;
 
   # Power management
   services.thermald.enable = true;
