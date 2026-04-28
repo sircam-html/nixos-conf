@@ -60,7 +60,6 @@
     ]) ++ [ zen.default ];
 
   programs.home-manager.enable = true;
-  programs.firefox.enable = true;
   programs.google-chrome.enable = true;
 
   home.stateVersion = "25.11";
