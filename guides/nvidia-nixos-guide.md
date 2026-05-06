@@ -42,4 +42,3 @@ If NVIDIA releases a security patch within the 580 branch (e.g., **580.159**), f
 6. **Repeat:** Continue until the rebuild completes successfully.
 
 ---
-*Generated during a support session on 2026-05-05.*
