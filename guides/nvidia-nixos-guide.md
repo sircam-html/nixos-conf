@@ -24,11 +24,17 @@ hardware.nvidia = {
 };
 ```
 
+## 📝 Note on the Hashes
+You will notice that only **`sha256_64bit`** and **`settingsSha256`** contain real values, while the others are zeros. This is expected:
+* **`sha256_64bit`**: The core driver for standard PCs. Nix downloads this first.
+* **`settingsSha256`**: The GUI settings tool.
+* **The Zeros**: Nix only checks hashes for files it actually downloads. Since you are likely on an x86_64 PC and have `open = false`, Nix ignores the ARM (`aarch64`) and `open` source files entirely.
+
 ## 🔄 How to Update in the Future
 If NVIDIA releases a security patch within the 580 branch (e.g., **580.159**), follow these steps to update:
 
 1. **Update Version:** Change the `version` string in your config to the new number.
-2. **Reset Hashes:** Change the `sha256_64bit` and `settingsSha256` values to dummy zeros: 
+2. **Reset Hashes:** Change the `sha256_64bit` and `settingsSha256` values back to dummy zeros: 
    `"sha256-0000000000000000000000000000000000000000000="`
 3. **Rebuild:** Run `sudo nixos-rebuild switch`.
 4. **Catch the Mismatch:** Nix will fail and report a "got" hash. 
@@ -36,3 +42,4 @@ If NVIDIA releases a security patch within the 580 branch (e.g., **580.159**), f
 6. **Repeat:** Continue until the rebuild completes successfully.
 
 ---
+*Generated during a support session on 2026-05-05.*
