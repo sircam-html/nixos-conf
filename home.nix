@@ -43,6 +43,7 @@
       discord
 
       # Dev/Productivity
+      git-lfs
       fastfetch
       devbox
       gedit
@@ -52,6 +53,7 @@
 
       # Multimedia
       youtube-music
+      stellarium
       unrar
       vlc
 
