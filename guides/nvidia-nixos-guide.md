@@ -1,4 +1,4 @@
-# NVIDIA Pascal (1070 Ti) Future-Proofing Guide for NixOS
+# NVIDIA Pascal Future-Proofing Guide for NixOS
 
 ## 📌 Context
 NVIDIA's **580 branch** is the final Long-Term Support (LTS) branch for **Pascal-architecture GPUs** (10-series). Standard NixOS updates (e.g., moving to version 26.05 or 27.05) will eventually point the "stable" driver package to version 590+, which officially drops support for these cards.
