@@ -34,8 +34,3 @@ Personal NixOS setup running **26.05pre** with KDE Plasma 6 on a hybrid AMD/NVID
 |-------|-------------|
 | `update` | Updates system, Home Manager and Flatpak apps |
 | `ddo` | Launches Dragon's Dogma Online via Bottles |
-
-
-- Repo mirror: [GitLab](https://gitlab.com/S1RCAM/personal-nix-configuration)
-- Repo mirror: [CodeBerg](https://codeberg.org/SIRCAM/nixos-conf)
-
