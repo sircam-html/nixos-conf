@@ -12,25 +12,25 @@
   boot.extraModulePackages = [ config.hardware.nvidia.package ];
 
   # ── Bootloader ────────────────────────────────────────────────────────────────
-  boot.loader.systemd-boot.enable = true;
+  boot.loader.systemd-boot.enable      = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
   # ── Plymouth Boot Splash ──────────────────────────────────────────────────────
   boot.plymouth = {
-    enable = true;
-    theme = "nixos-bgrt";
-    themePackages = [ pkgs.nixos-bgrt-plymouth ];
+    enable          = true;
+    theme           = "nixos-bgrt";
+    themePackages   = [ pkgs.nixos-bgrt-plymouth ];
   };
   boot.initrd.systemd.enable = true;
-  boot.consoleLogLevel = 0;
-  boot.initrd.verbose = false;
+  boot.consoleLogLevel       = 0;
+  boot.initrd.verbose        = false;
 
   # ── Kernel Params ─────────────────────────────────────────────────────────────
   # NVIDIA DRM KMS, AMD pstate power control and Plymouth
   boot.kernelParams = [ "nvidia-drm.modeset=1" "amd_pstate=passive" "quiet" "splash" "udev.log_level=3" ];
 
   # ── Networking ────────────────────────────────────────────────────────────────
-  networking.hostName = "nixos";
+  networking.hostName              = "nixos";
   networking.networkmanager.enable = true;
 
   # ── Time Zone ─────────────────────────────────────────────────────────────────
@@ -50,22 +50,26 @@
     LC_TIME           = "en_US.UTF-8";
   };
 
+  # ── Keyboard Layout ───────────────────────────────────────────────────────────
+  # US layout with AltGr international variant for Spanish accents and ñ
+  services.xserver.xkb.layout  = "us";
+  services.xserver.xkb.variant = "altgr-intl";
+
   # ── KDE Plasma Desktop ────────────────────────────────────────────────────────
-  services.displayManager.sddm.enable  = true;
+  services.displayManager.sddm.enable    = true;
   services.desktopManager.plasma6.enable = true;
-  services.xserver.xkb.layout = "us";
 
   # ── Printing ──────────────────────────────────────────────────────────────────
   services.printing.enable = true;
 
   # ── Sound (PipeWire) ──────────────────────────────────────────────────────────
   services.pulseaudio.enable = false;
-  security.rtkit.enable = true;
+  security.rtkit.enable      = true;
   services.pipewire = {
-    enable = true;
-    alsa.enable = true;
+    enable            = true;
+    alsa.enable       = true;
     alsa.support32Bit = true;
-    pulse.enable = true;
+    pulse.enable      = true;
   };
 
   # ── User Account ──────────────────────────────────────────────────────────────
@@ -82,7 +86,7 @@
     user   = "sircam";
   };
 
-  # ── CoolerControl ────────────────────────────────────────────────────────────
+  # ── CoolerControl ─────────────────────────────────────────────────────────────
   programs.coolercontrol.enable = true;
 
   # ── Allow Unfree Packages ─────────────────────────────────────────────────────
@@ -95,7 +99,7 @@
 
   # ── Graphics Stack ────────────────────────────────────────────────────────────
   hardware.graphics = {
-    enable = true;
+    enable      = true;
     enable32Bit = true;
     extraPackages = with pkgs; [
       libva-vdpau-driver
@@ -115,12 +119,12 @@
     nvidiaSettings     = true;
     open               = false;
     package            = config.boot.kernelPackages.nvidiaPackages.mkDriver {
-      version              = "580.142";
-      sha256_64bit         = "sha256-IJFfzz/+icNVDPk7YKBKKFRTFQ2S4kaOGRGkNiBEdWM=";
-      sha256_aarch64       = "sha256-0000000000000000000000000000000000000000000=";
-      openSha256           = "sha256-0000000000000000000000000000000000000000000=";
-      settingsSha256       = "sha256-BnrIlj5AvXTfqg/qcBt2OS9bTDDZd3uhf5jqOtTMTQM=";
-      persistencedSha256   = "sha256-0000000000000000000000000000000000000000000=";
+      version            = "580.142";
+      sha256_64bit       = "sha256-IJFfzz/+icNVDPk7YKBKKFRTFQ2S4kaOGRGkNiBEdWM=";
+      sha256_aarch64     = "sha256-0000000000000000000000000000000000000000000=";
+      openSha256         = "sha256-0000000000000000000000000000000000000000000=";
+      settingsSha256     = "sha256-BnrIlj5AvXTfqg/qcBt2OS9bTDDZd3uhf5jqOtTMTQM=";
+      persistencedSha256 = "sha256-0000000000000000000000000000000000000000000=";
     };
   };
 
@@ -132,10 +136,10 @@
 
   # ── Session Variables (Wayland + NVIDIA) ──────────────────────────────────────
   environment.sessionVariables = {
-    GBM_BACKEND            = "nvidia-drm";
-    LIBVA_DRIVER_NAME      = "nvidia";
+    GBM_BACKEND               = "nvidia-drm";
+    LIBVA_DRIVER_NAME         = "nvidia";
     __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-    XDG_SESSION_TYPE       = "wayland";
+    XDG_SESSION_TYPE          = "wayland";
   };
 
   # ── AMD CPU Microcode ─────────────────────────────────────────────────────────
@@ -144,17 +148,17 @@
   # ── TLP Power Management (desktop-optimized) ──────────────────────────────────
   services.tlp.enable = true;
   services.tlp.settings = {
-    CPU_SCALING_GOVERNOR_ON_AC    = "schedutil";      # Balanced performance and efficiency
-    CPU_BOOST_ON_AC               = 0;                # Disable CPU boost to reduce heat
-    CPU_ENERGY_PERF_POLICY_ON_AC  = "balance_power";  # Favor power saving while maintaining performance
+    CPU_SCALING_GOVERNOR_ON_AC   = "schedutil";     # Balanced performance and efficiency
+    CPU_BOOST_ON_AC              = 0;               # Disable CPU boost to reduce heat
+    CPU_ENERGY_PERF_POLICY_ON_AC = "balance_power"; # Favor power saving while maintaining performance
   };
 
   # ── Disable power-profiles-daemon (conflicts with TLP) ───────────────────────
   services.power-profiles-daemon.enable = false;
 
   # ── Power Management ──────────────────────────────────────────────────────────
-  powerManagement.enable           = true;
-  powerManagement.cpuFreqGovernor  = null;
+  powerManagement.enable          = true;
+  powerManagement.cpuFreqGovernor = null;
 
   # ── Disable Sleep / Hibernation ───────────────────────────────────────────────
   systemd.sleep.settings.Sleep = {
@@ -172,16 +176,16 @@
 
   # ── Steam ─────────────────────────────────────────────────────────────────────
   programs.steam = {
-    enable                          = true;
-    remotePlay.openFirewall         = true;
-    dedicatedServer.openFirewall    = true;
+    enable                                = true;
+    remotePlay.openFirewall               = true;
+    dedicatedServer.openFirewall          = true;
     localNetworkGameTransfers.openFirewall = true;
   };
 
   # ── Nix Store Cleanup / Optimization ─────────────────────────────────────────
-  nix.gc.automatic             = true;
-  nix.gc.dates                 = "daily";
-  nix.gc.options               = "--delete-older-than 10d";
+  nix.gc.automatic                   = true;
+  nix.gc.dates                       = "daily";
+  nix.gc.options                     = "--delete-older-than 10d";
   nix.settings.auto-optimise-store   = true;
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
