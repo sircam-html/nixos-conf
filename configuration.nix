@@ -1,4 +1,4 @@
-# NixOS 26.05pre + pinned nvidia drivers 580.142
+# NixOS Unstable + NVIDIA legacy_580 driver
 # User apps: Home Manager (home.nix = 100% pure)
 
 { config, pkgs, ... }:
@@ -113,19 +113,12 @@
     ];
   };
 
-  # ── NVIDIA Driver (pinned to 580.142) ─────────────────────────────────────────
+  # ── NVIDIA Driver (Legacy 580) ────────────────────────────────────────────────
   hardware.nvidia = {
     modesetting.enable = true;
     nvidiaSettings     = true;
     open               = false;
-    package            = config.boot.kernelPackages.nvidiaPackages.mkDriver {
-      version            = "580.142";
-      sha256_64bit       = "sha256-IJFfzz/+icNVDPk7YKBKKFRTFQ2S4kaOGRGkNiBEdWM=";
-      sha256_aarch64     = "sha256-0000000000000000000000000000000000000000000=";
-      openSha256         = "sha256-0000000000000000000000000000000000000000000=";
-      settingsSha256     = "sha256-BnrIlj5AvXTfqg/qcBt2OS9bTDDZd3uhf5jqOtTMTQM=";
-      persistencedSha256 = "sha256-0000000000000000000000000000000000000000000=";
-    };
+    package            = config.boot.kernelPackages.nvidiaPackages.legacy_580;
   };
 
   # ── X Server (NVIDIA) ─────────────────────────────────────────────────────────

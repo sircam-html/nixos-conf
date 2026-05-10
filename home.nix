@@ -1,4 +1,4 @@
-# NixOS Home Manager configuration
+# NixOS Unstable Home Manager configuration
 # User apps: 100% pure, no system packages here
 
 { config, pkgs, ... }:
@@ -70,14 +70,26 @@ in {
   programs.home-manager.enable  = true;
   programs.google-chrome.enable = true;
 
-  programs.fish = {
-    enable = true;
-    shellAliases = {
-      # Update system, home-manager and flatpak apps
-      update = "sudo nix-channel --update && sudo nixos-rebuild switch --upgrade && home-manager switch && flatpak update -y";
-      # Launch Dragon's Dogma Online via Bottles
-      ddo    = "flatpak run com.usebottles.bottles";
-    };
+programs.fish = {
+  enable = true;
+  shellAliases = {
+    # Update system, home-manager and flatpak apps
+    update = "sudo nix-channel --update && sudo nixos-rebuild switch --upgrade && home-manager switch && flatpak update -y";
+    # Launch Dragon's Dogma Online via Bottles
+    ddo    = "flatpak run com.usebottles.bottles";
+    # Home Manager switch
+    hm     = "home-manager switch";
+    # NixOS rebuild
+    nr     = "sudo nixos-rebuild switch";
+    # Edit system config
+    cn  = "sudo gedit /etc/nixos/configuration.nix";
+    # Edit home config
+    hn  = "gedit ~/.config/home-manager/home.nix";
+    # Nix garbage collect
+    gc  = "sudo nix-collect-garbage -d";
+    # Nix Store Optimise
+    op  = "nix store optimise";
   };
+};
 
 }
