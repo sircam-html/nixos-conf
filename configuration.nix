@@ -1,51 +1,64 @@
-# NixOS 25.11 + 580.142 = Stable, minimal base
+# NixOS 26.05pre + pinned nvidia drivers 580.142
 # User apps: Home Manager (home.nix = 100% pure)
 
 { config, pkgs, ... }:
 
 {
-  imports = [ # Include the results of the hardware scan.
+  imports = [
     ./hardware-configuration.nix
   ];
 
-  # ExtraModules.
-  boot.extraModulePackages
-  = [ config.hardware.nvidia.package ];
+  # ── Extra Module Packages ─────────────────────────────────────────────────────
+  boot.extraModulePackages = [ config.hardware.nvidia.package ];
 
-  # Bootloader.
+  # ── Bootloader ────────────────────────────────────────────────────────────────
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  # Enable networking.
+  # ── Plymouth Boot Splash ──────────────────────────────────────────────────────
+  boot.plymouth = {
+    enable = true;
+    theme = "nixos-bgrt";
+    themePackages = [ pkgs.nixos-bgrt-plymouth ];
+  };
+  boot.initrd.systemd.enable = true;
+  boot.consoleLogLevel = 0;
+  boot.initrd.verbose = false;
+
+  # ── Kernel Params ─────────────────────────────────────────────────────────────
+  # NVIDIA DRM KMS, AMD pstate power control and Plymouth
+  boot.kernelParams = [ "nvidia-drm.modeset=1" "amd_pstate=passive" "quiet" "splash" "udev.log_level=3" ];
+
+  # ── Networking ────────────────────────────────────────────────────────────────
   networking.hostName = "nixos";
   networking.networkmanager.enable = true;
 
-  # Set time zone.
+  # ── Time Zone ─────────────────────────────────────────────────────────────────
   time.timeZone = "America/Santo_Domingo";
 
-  # Select internationalisation properties.
+  # ── Internationalisation ──────────────────────────────────────────────────────
   i18n.defaultLocale = "en_US.UTF-8";
   i18n.extraLocaleSettings = {
-    LC_ADDRESS = "en_US.UTF-8";
+    LC_ADDRESS        = "en_US.UTF-8";
     LC_IDENTIFICATION = "en_US.UTF-8";
-    LC_MEASUREMENT = "en_US.UTF-8";
-    LC_MONETARY = "en_US.UTF-8";
-    LC_NAME = "en_US.UTF-8";
-    LC_NUMERIC = "en_US.UTF-8";
-    LC_PAPER = "en_US.UTF-8";
-    LC_TELEPHONE = "en_US.UTF-8";
-    LC_TIME = "en_US.UTF-8";
+    LC_MEASUREMENT    = "en_US.UTF-8";
+    LC_MONETARY       = "en_US.UTF-8";
+    LC_NAME           = "en_US.UTF-8";
+    LC_NUMERIC        = "en_US.UTF-8";
+    LC_PAPER          = "en_US.UTF-8";
+    LC_TELEPHONE      = "en_US.UTF-8";
+    LC_TIME           = "en_US.UTF-8";
   };
 
-  # Enable the KDE Plasma Desktop Environment.
-  services.displayManager.sddm.enable = true;
+  # ── KDE Plasma Desktop ────────────────────────────────────────────────────────
+  services.displayManager.sddm.enable  = true;
   services.desktopManager.plasma6.enable = true;
-
   services.xserver.xkb.layout = "us";
 
+  # ── Printing ──────────────────────────────────────────────────────────────────
   services.printing.enable = true;
 
-  # Enable sound with pipewire.
+  # ── Sound (PipeWire) ──────────────────────────────────────────────────────────
   services.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
@@ -55,32 +68,32 @@
     pulse.enable = true;
   };
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
+  # ── User Account ──────────────────────────────────────────────────────────────
   users.users.sircam = {
     isNormalUser = true;
-    description = "Cristian J. Hidalgo";
-    extraGroups = [ "networkmanager" "wheel" "qemu-libvirtd" "libvirtd" ];
-    packages = with pkgs; [ kdePackages.kate ];
+    description  = "Cristian J. Hidalgo";
+    extraGroups  = [ "networkmanager" "wheel" "qemu-libvirtd" "libvirtd" ];
+    packages     = with pkgs; [ kdePackages.kate ];
   };
 
-  # Enable automatic login for the user.
+  # ── Auto Login ────────────────────────────────────────────────────────────────
   services.displayManager.autoLogin = {
     enable = true;
-    user = "sircam";
+    user   = "sircam";
   };
 
-  # Install/enable coolercontrol.
+  # ── CoolerControl ────────────────────────────────────────────────────────────
   programs.coolercontrol.enable = true;
 
-  # Allow unfree packages.
+  # ── Allow Unfree Packages ─────────────────────────────────────────────────────
   nixpkgs.config.allowUnfree = true;
 
-  # List packages installed in system profile.
+  # ── System Packages ───────────────────────────────────────────────────────────
   environment.systemPackages = with pkgs; [
     libvirt
   ];
 
-  # Enable graphics stack.
+  # ── Graphics Stack ────────────────────────────────────────────────────────────
   hardware.graphics = {
     enable = true;
     enable32Bit = true;
@@ -96,92 +109,83 @@
     ];
   };
 
-  # Enable proprietary NVIDIA driver pinned to 580.142
+  # ── NVIDIA Driver (pinned to 580.142) ─────────────────────────────────────────
   hardware.nvidia = {
     modesetting.enable = true;
-    nvidiaSettings = true;
-    open = false;
-    package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
-      version = "580.142";
-      sha256_64bit = "sha256-IJFfzz/+icNVDPk7YKBKKFRTFQ2S4kaOGRGkNiBEdWM=";
-      sha256_aarch64 = "sha256-0000000000000000000000000000000000000000000=";
-      openSha256 = "sha256-0000000000000000000000000000000000000000000=";
-      settingsSha256 = "sha256-BnrIlj5AvXTfqg/qcBt2OS9bTDDZd3uhf5jqOtTMTQM=";
-      persistencedSha256 = "sha256-0000000000000000000000000000000000000000000=";
+    nvidiaSettings     = true;
+    open               = false;
+    package            = config.boot.kernelPackages.nvidiaPackages.mkDriver {
+      version              = "580.142";
+      sha256_64bit         = "sha256-IJFfzz/+icNVDPk7YKBKKFRTFQ2S4kaOGRGkNiBEdWM=";
+      sha256_aarch64       = "sha256-0000000000000000000000000000000000000000000=";
+      openSha256           = "sha256-0000000000000000000000000000000000000000000=";
+      settingsSha256       = "sha256-BnrIlj5AvXTfqg/qcBt2OS9bTDDZd3uhf5jqOtTMTQM=";
+      persistencedSha256   = "sha256-0000000000000000000000000000000000000000000=";
     };
   };
 
-  # Enable X server with NVIDIA driver.
+  # ── X Server (NVIDIA) ─────────────────────────────────────────────────────────
   services.xserver = {
-    enable = true;
+    enable       = true;
     videoDrivers = [ "nvidia" ];
   };
 
-  # Environment variables for Wayland or X11.
+  # ── Session Variables (Wayland + NVIDIA) ──────────────────────────────────────
   environment.sessionVariables = {
-    GBM_BACKEND = "nvidia-drm";
-    LIBVA_DRIVER_NAME = "nvidia";
+    GBM_BACKEND            = "nvidia-drm";
+    LIBVA_DRIVER_NAME      = "nvidia";
     __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-    XDG_SESSION_TYPE = "wayland";
+    XDG_SESSION_TYPE       = "wayland";
   };
 
-  # Accept NVIDIA license.
-  nixpkgs.config.nvidia.acceptLicense = true;
-
-  # Kernel params for NVIDIA DRM KMS and AMD pstate power control
-  boot.kernelParams = [ "nvidia-drm.modeset=1" "amd_pstate=passive" ];
-
-  # Enable AMD CPU microcode updates for stability and performance.
+  # ── AMD CPU Microcode ─────────────────────────────────────────────────────────
   hardware.cpu.amd.updateMicrocode = true;
 
-  # Enable thermald for dynamic thermal management (good for desktops).
-  services.thermald.enable = true;
-
-  # Enable TLP for advanced power management, desktop-optimized.
+  # ── TLP Power Management (desktop-optimized) ──────────────────────────────────
   services.tlp.enable = true;
-
-  # TLP settings optimized for desktop (no battery-specific tuning).
   services.tlp.settings = {
-    CPU_SCALING_GOVERNOR_ON_AC = "schedutil";  # Balanced performance and efficiency.
-    CPU_BOOST_ON_AC = 0;   # Disable CPU boost to reduce heat.
-    CPU_ENERGY_PERF_POLICY_ON_AC = "balance_power";  # Favor power saving while maintaining performance.
+    CPU_SCALING_GOVERNOR_ON_AC    = "schedutil";      # Balanced performance and efficiency
+    CPU_BOOST_ON_AC               = 0;                # Disable CPU boost to reduce heat
+    CPU_ENERGY_PERF_POLICY_ON_AC  = "balance_power";  # Favor power saving while maintaining performance
   };
 
-  # Disable power-profiles-daemon to avoid conflicts with TLP.
+  # ── Disable power-profiles-daemon (conflicts with TLP) ───────────────────────
   services.power-profiles-daemon.enable = false;
 
-  # Enable powerManagement and disable CPU governor management to avoid conflicts.
-  powerManagement.enable = true;
-  powerManagement.cpuFreqGovernor = null;
+  # ── Power Management ──────────────────────────────────────────────────────────
+  powerManagement.enable           = true;
+  powerManagement.cpuFreqGovernor  = null;
 
-  # Disable automatic suspend and hibernation on desktop to prevent unwanted sleep.
-  systemd.sleep.extraConfig = ''
-    AllowSuspend=no
-    AllowHibernation=no
-    AllowHybridSleep=no
-    AllowSuspendThenHibernate=no
-  '';
+  # ── Disable Sleep / Hibernation ───────────────────────────────────────────────
+  systemd.sleep.settings.Sleep = {
+    AllowSuspend              = "no";
+    AllowHibernation          = "no";
+    AllowHybridSleep          = "no";
+    AllowSuspendThenHibernate = "no";
+  };
 
-  # Enable Virtualization.
+  # ── Virtualization ────────────────────────────────────────────────────────────
   virtualisation.libvirtd.enable = true;
 
-  # Play Steam games locally.
-  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (pkgs.lib.getName pkg) [ "steam" "steam-unwrapped" ];
+  # ── Flatpak ───────────────────────────────────────────────────────────────────
+  services.flatpak.enable = true;
+
+  # ── Steam ─────────────────────────────────────────────────────────────────────
   programs.steam = {
-    enable = true;
-    remotePlay.openFirewall = true;
-    dedicatedServer.openFirewall = true;
+    enable                          = true;
+    remotePlay.openFirewall         = true;
+    dedicatedServer.openFirewall    = true;
     localNetworkGameTransfers.openFirewall = true;
   };
 
-  # Automatic cleanup/optimization.
-  nix.gc.automatic = true;
-  nix.gc.dates = "daily";
-  nix.gc.options = "--delete-older-than 10d";
-  nix.settings.auto-optimise-store = true;
+  # ── Nix Store Cleanup / Optimization ─────────────────────────────────────────
+  nix.gc.automatic             = true;
+  nix.gc.dates                 = "daily";
+  nix.gc.options               = "--delete-older-than 10d";
+  nix.settings.auto-optimise-store   = true;
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
-  # Disable password prompt.
+  # ── Sudo (no password prompt) ─────────────────────────────────────────────────
   security.sudo.extraRules = [{
     users = [ "sircam" ];
     commands = [{
@@ -190,9 +194,9 @@
     }];
   }];
 
-  # On boot Automatic cleanup.
+  # ── Clean /tmp on Boot ────────────────────────────────────────────────────────
   boot.tmp.cleanOnBoot = true;
 
-  # Start system version.
+  # ── State Version ─────────────────────────────────────────────────────────────
   system.stateVersion = "25.05";
 }

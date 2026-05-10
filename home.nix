@@ -1,68 +1,83 @@
-{ config, pkgs, ... }: {
+# NixOS Home Manager configuration
+# User apps: 100% pure, no system packages here
+
+{ config, pkgs, ... }:
+
+let
+  # ── Zen Browser ───────────────────────────────────────────────────────────────
+  # Unpinned on purpose: pulls latest from master on every switch
+  zen = import (builtins.fetchTarball
+    "https://github.com/youwen5/zen-browser-flake/archive/master.tar.gz"
+  ) { inherit pkgs; };
+
+in {
+
+  # ── User ──────────────────────────────────────────────────────────────────────
+  home.username      = "sircam";
+  home.homeDirectory = "/home/sircam";
+  home.stateVersion  = "25.11";
+  home.enableNixpkgsReleaseCheck = false;
+  news.display               = "silent";
   nixpkgs.config.allowUnfree = true;
 
-  home.username = "sircam";
-  home.homeDirectory = "/home/sircam";
+  # ── Packages ──────────────────────────────────────────────────────────────────
+  home.packages = (with pkgs; [
 
-  home.enableNixpkgsReleaseCheck = false;
+    # KDE
+    kdePackages.isoimagewriter
+    kdePackages.kolourpaint
+    kdePackages.filelight
+    kdePackages.ktorrent
+    kdePackages.yakuake
+    kdePackages.sweeper
+    kdePackages.kcalc
 
-  home.packages =
-    # Zen Browser
-    let
-      zen = import (builtins.fetchTarball "https://github.com/youwen5/zen-browser-flake/archive/master.tar.gz") {
-        inherit pkgs;
-      };
-      # Bottles override (remove warning popup)
-      bottlesNoWarning = pkgs.bottles.override {
-        removeWarningPopup = true;
-      };
-    in
-    (with pkgs; [
-      # KDE
-      kdePackages.isoimagewriter
-      kdePackages.kolourpaint
-      kdePackages.filelight
-      kdePackages.ktorrent
-      kdePackages.yakuake
-      kdePackages.sweeper
-      kdePackages.kcalc
+    # Gaming / Streaming
+    coolercontrol.coolercontrol-gui
+    obs-studio
+    mangohud
+    goverlay
+    heroic
+    steam
+    wine
 
-      # Gaming/Streaming
-      coolercontrol.coolercontrol-gui
-      bottlesNoWarning
-      obs-studio
-      mangohud
-      goverlay
-      heroic
-      steam
-      wine
+    # Browsers
+    chromium
+    ferdium
+    discord
 
-      # Browsers
-      chromium
-      ferdium
-      discord
+    # Dev / Productivity
+    fastfetch
+    devbox
+    gedit
+    htop
+    git
 
-      # Dev/Productivity
-      git-lfs
-      fastfetch
-      devbox
-      gedit
-      fish
-      htop
-      git
+    # Multimedia
+    pear-desktop  # YouTube Music desktop client
+    stellarium
+    unrar
+    vlc
 
-      # Multimedia
-      youtube-music
-      stellarium
-      unrar
-      vlc
+    # VMs
+    virt-manager
 
-      # VMs (GUI)
-      virt-manager
-    ]) ++ [ zen.default ];
+  ]) ++ [
+    zen.default  # Zen Browser — sourced outside nixpkgs via fetchTarball
+  ];
 
-  programs.home-manager.enable = true;
+  # ── Programs ──────────────────────────────────────────────────────────────────
+  programs.home-manager.enable  = true;
   programs.google-chrome.enable = true;
 
-  home.stateVersion = "25.11";
+  programs.fish = {
+    enable = true;
+    shellAliases = {
+      # Update system, home-manager and flatpak apps
+      update = "sudo nix-channel --update && sudo nixos-rebuild switch --upgrade && home-manager switch && flatpak update -y";
+      # Launch Dragon's Dogma Online via Bottles
+      ddo    = "flatpak run com.usebottles.bottles";
+    };
+  };
+
 }
