@@ -33,7 +33,7 @@ in {
     kdePackages.kcalc
 
     # Gaming / Streaming
-    coolercontrol.coolercontrol-gui    
+    coolercontrol.coolercontrol-gui
     obs-studio
     mangohud
     goverlay
@@ -47,7 +47,7 @@ in {
     discord
 
     # Dev / Productivity
-    fastfetch
+    hydra-check    
     devbox
     gedit
     htop
@@ -70,15 +70,19 @@ in {
   programs.home-manager.enable  = true;
   programs.google-chrome.enable = true;
 
+  # ── Fastfetch ─────────────────────────────────────────────────────────────────
+  # Managed via Home Manager, preset set via ff alias
+  programs.fastfetch.enable = true;
+
   programs.fish = {
     enable = true;
     shellAliases = {
       # Update system and home-manager
-      up = "sudo nix-channel --update && sudo nixos-rebuild switch --upgrade && home-manager switch";
+      up     = "sudo nix-channel --update && sudo nixos-rebuild switch --upgrade && home-manager switch";
       # Home Manager switch
       hm     = "home-manager switch";
       # NixOS rebuild
-      nr     = "sudo nixos-rebuild switch";      
+      nr     = "sudo nixos-rebuild switch";
       # Edit system config
       cn     = "sudo gedit /etc/nixos/configuration.nix";
       # Edit home config
@@ -86,11 +90,15 @@ in {
       # Nix garbage collect
       gc     = "sudo nix-collect-garbage -d";
       # Delete old Nix generations and update bootloader
-      dg     = "sudo nix-env --delete-generations old && sudo nixos-rebuild boot";      
+      dg     = "sudo nix-env --delete-generations old && sudo nixos-rebuild boot";
       # Nix store optimise
       op     = "nix store optimise";
       # Restart KDE Plasma shell
       ps     = "systemctl --user restart plasma-plasmashell";
+      # Fastfetch with custom preset
+      ff     = "fastfetch -c examples/7";
+      # Hydra status check
+      hc     = "hydra-check";
     };
   };
 
