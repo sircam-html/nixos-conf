@@ -9,7 +9,7 @@ Personal NixOS setup running **26.05 Unstable** with KDE Plasma 6 on a hybrid AM
 | OS | NixOS 26.05 Unstable |
 | Desktop | KDE Plasma 6 (Wayland) |
 | CPU | AMD (pstate + schedutil) |
-| GPU | NVIDIA (pinned driver 580.142) |
+| GPU | NVIDIA (Legacy_580) |
 | Bootloader | systemd-boot + Plymouth (nixos-bgrt theme) |
 | Shell | Fish (with aliases)|
 
