@@ -1,17 +1,17 @@
 # NixOS Configuration
 
-Personal NixOS setup running **26.05pre** with KDE Plasma 6 on a hybrid AMD/NVIDIA system.
+Personal NixOS setup running **26.05 Unstable** with KDE Plasma 6 on a hybrid AMD/NVIDIA system.
 
 ## System
 
 | Component | Details |
 |-----------|---------|
-| OS | NixOS 26.05pre |
+| OS | NixOS 26.05 Unstable |
 | Desktop | KDE Plasma 6 (Wayland) |
 | CPU | AMD (pstate + schedutil) |
 | GPU | NVIDIA (pinned driver 580.142) |
 | Bootloader | systemd-boot + Plymouth (nixos-bgrt theme) |
-| Shell | Fish |
+| Shell | Fish (with aliases)|
 
 ## Structure
 
