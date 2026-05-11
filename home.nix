@@ -33,7 +33,7 @@ in {
     kdePackages.kcalc
 
     # Gaming / Streaming
-    coolercontrol.coolercontrol-gui
+    coolercontrol.coolercontrol-gui    
     obs-studio
     mangohud
     goverlay
@@ -70,26 +70,29 @@ in {
   programs.home-manager.enable  = true;
   programs.google-chrome.enable = true;
 
-programs.fish = {
-  enable = true;
-  shellAliases = {
-    # Update system, home-manager and flatpak apps
-    update = "sudo nix-channel --update && sudo nixos-rebuild switch --upgrade && home-manager switch && flatpak update -y";
-    # Launch Dragon's Dogma Online via Bottles
-    ddo    = "flatpak run com.usebottles.bottles";
-    # Home Manager switch
-    hm     = "home-manager switch";
-    # NixOS rebuild
-    nr     = "sudo nixos-rebuild switch";
-    # Edit system config
-    cn  = "sudo gedit /etc/nixos/configuration.nix";
-    # Edit home config
-    hn  = "gedit ~/.config/home-manager/home.nix";
-    # Nix garbage collect
-    gc  = "sudo nix-collect-garbage -d";
-    # Nix Store Optimise
-    op  = "nix store optimise";
+  programs.fish = {
+    enable = true;
+    shellAliases = {
+      # Update system and home-manager
+      up = "sudo nix-channel --update && sudo nixos-rebuild switch --upgrade && home-manager switch";
+      # Home Manager switch
+      hm     = "home-manager switch";
+      # NixOS rebuild
+      nr     = "sudo nixos-rebuild switch";      
+      # Edit system config
+      cn     = "sudo gedit /etc/nixos/configuration.nix";
+      # Edit home config
+      hn     = "gedit ~/.config/home-manager/home.nix";
+      # Nix garbage collect
+      gc     = "sudo nix-collect-garbage -d";
+      # Delete old Nix generations and update bootloader
+      dg     = "sudo nix-env --delete-generations old && sudo nixos-rebuild boot";      
+      # Nix store optimise
+      op     = "nix store optimise";
+      # Restart KDE Plasma shell
+      ps     = "systemctl --user restart plasma-plasmashell";
+    };
   };
-};
 
 }
+

@@ -17,9 +17,9 @@
 
   # ── Plymouth Boot Splash ──────────────────────────────────────────────────────
   boot.plymouth = {
-    enable          = true;
-    theme           = "nixos-bgrt";
-    themePackages   = [ pkgs.nixos-bgrt-plymouth ];
+    enable        = true;
+    theme         = "nixos-bgrt";
+    themePackages = [ pkgs.nixos-bgrt-plymouth ];
   };
   boot.initrd.systemd.enable = true;
   boot.consoleLogLevel       = 0;
@@ -164,9 +164,6 @@
   # ── Virtualization ────────────────────────────────────────────────────────────
   virtualisation.libvirtd.enable = true;
 
-  # ── Flatpak ───────────────────────────────────────────────────────────────────
-  services.flatpak.enable = true;
-
   # ── Steam ─────────────────────────────────────────────────────────────────────
   programs.steam = {
     enable                                = true;
@@ -197,3 +194,4 @@
   # ── State Version ─────────────────────────────────────────────────────────────
   system.stateVersion = "25.05";
 }
+
