@@ -20,17 +20,9 @@ Personal NixOS setup running **26.05 Unstable** with KDE Plasma 6 on a hybrid AM
 
 ## Highlights
 
-- NVIDIA driver pinned to `580.142` for stability
+- NVIDIA driver `Legacy_580` for stability
 - Plymouth animated boot splash with NixOS logo
-- Flatpak enabled for sandboxed apps (Bottles)
 - Steam with Proton for gaming
 - Auto cleanup of Nix store older than 10 days
 - TLP power management optimized for desktop
 - Virtualization via libvirt/virt-manager
-
-## Useful Aliases
-
-| Alias | Description |
-|-------|-------------|
-| `update` | Updates system, Home Manager and Flatpak apps |
-| `ddo` | Launches Dragon's Dogma Online via Bottles |
