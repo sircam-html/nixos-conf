@@ -1,4 +1,4 @@
-# NixOS Unstable Home Manager configuration
+# NixOS Unstable / Home Manager configuration
 # User apps: 100% pure, no system packages here
 
 { config, pkgs, ... }:
@@ -34,6 +34,7 @@ in {
 
     # Gaming / Streaming
     coolercontrol.coolercontrol-gui
+    bottles-unwrapped
     obs-studio
     mangohud
     goverlay
@@ -68,7 +69,6 @@ in {
 
   # ── Programs ──────────────────────────────────────────────────────────────────
   programs.home-manager.enable  = true;
-  programs.google-chrome.enable = true;
 
   # ── Fastfetch ─────────────────────────────────────────────────────────────────
   # Managed via Home Manager, preset set via ff alias
@@ -86,7 +86,7 @@ in {
       # Edit system config
       cn     = "sudo gedit /etc/nixos/configuration.nix";
       # Edit home config
-      hn     = "gedit ~/.config/home-manager/home.nix";
+      hn     = "kate ~/.config/home-manager/home.nix";
       # Nix garbage collect
       gc     = "sudo nix-collect-garbage -d";
       # Delete old Nix generations and update bootloader
