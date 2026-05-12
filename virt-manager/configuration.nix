@@ -1,121 +1,192 @@
-# Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
+# NixOS Unstable + NVIDIA (Pinned 580.142)
+# User apps: Home Manager (home.nix = 100% pure)
 
 { config, pkgs, ... }:
 
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-    ];
-
-  # Bootloader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-  boot.plymouth.enable = true;
-
-  # Use latest kernel.
-  boot.kernelPackages = pkgs.linuxPackages_latest;
-
-  networking.hostName = "nixos"; # Define your hostname.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
-
-  # Enable networking
-  networking.networkmanager.enable = true;
-
-  # Set your time zone.
-  time.timeZone = "America/Santo_Domingo";
-
-  # Select internationalisation properties.
-  i18n.defaultLocale = "en_US.UTF-8";
-
-  i18n.extraLocaleSettings = {
-    LC_ADDRESS = "es_DO.UTF-8";
-    LC_IDENTIFICATION = "es_DO.UTF-8";
-    LC_MEASUREMENT = "es_DO.UTF-8";
-    LC_MONETARY = "es_DO.UTF-8";
-    LC_NAME = "es_DO.UTF-8";
-    LC_NUMERIC = "es_DO.UTF-8";
-    LC_PAPER = "es_DO.UTF-8";
-    LC_TELEPHONE = "es_DO.UTF-8";
-    LC_TIME = "es_DO.UTF-8";
-  };
-
-  # Enable the X11 windowing system.
-  # You can disable this if you're only using the Wayland session.
-  services.xserver.enable = true;
-
-  # Enable the KDE Plasma Desktop Environment.
-  services.displayManager.sddm.enable = true;
-  services.desktopManager.plasma6.enable = true;
-
-  # Configure keymap in X11
-  services.xserver.xkb = {
-    layout = "us";
-    variant = "";
-  };
-
-  # Enable CUPS to print documents.
-  services.printing.enable = true;
-
-  # Enable sound with pipewire.
-  services.pulseaudio.enable = false;
-  security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-    # If you want to use JACK applications, uncomment this
-    #jack.enable = true;
-
-    # use the example session manager (no others are packaged yet so this is enabled by default,
-    # no need to redefine it in your config for now)
-    #media-session.enable = true;
-  };
-
-  # Enable touchpad support (enabled default in most desktopManager).
-  # services.xserver.libinput.enable = true;
-
-  # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.sircam = {
-    isNormalUser = true;
-    description = "Cristian J. Hidalgo";
-    extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [
-      kdePackages.kate
-    #  thunderbird
-    ];
-  };
-
-  # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
-
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
-  environment.systemPackages = with pkgs; [
-  nixos-bgrt-plymouth
+  imports = [
+    ./hardware-configuration.nix
   ];
 
-    # Enable automatic login for the user.
-  services.displayManager.autoLogin = {
-    enable = true;
-    user = "sircam";
+  # ── Extra Module Packages ─────────────────────────────────────────────────────
+  boot.extraModulePackages = [ config.hardware.nvidia.package ];
+
+  # ── Bootloader ────────────────────────────────────────────────────────────────
+  boot.loader.systemd-boot.enable      = true;
+  boot.loader.efi.canTouchEfiVariables = true;
+
+  # ── Plymouth Boot Splash ──────────────────────────────────────────────────────
+  boot.plymouth = {
+    enable        = true;
+    theme         = "nixos-bgrt";
+    themePackages = [ pkgs.nixos-bgrt-plymouth ];
+  };
+  boot.initrd.systemd.enable = true;
+  boot.consoleLogLevel       = 0;
+  boot.initrd.verbose        = false;
+
+  # ── Kernel Params ─────────────────────────────────────────────────────────────
+  # NVIDIA DRM KMS, AMD pstate power control and Plymouth
+  boot.kernelParams = [ "nvidia-drm.modeset=1" "amd_pstate=passive" "quiet" "splash" "udev.log_level=3" ];
+
+  # ── Networking ────────────────────────────────────────────────────────────────
+  networking.hostName              = "nixos";
+  networking.networkmanager.enable = true;
+
+  # ── Time Zone ─────────────────────────────────────────────────────────────────
+  time.timeZone = "America/Santo_Domingo";
+
+  # ── Internationalisation ──────────────────────────────────────────────────────
+  i18n.defaultLocale = "en_US.UTF-8";
+  i18n.extraLocaleSettings = {
+    LC_ADDRESS        = "en_US.UTF-8";
+    LC_IDENTIFICATION = "en_US.UTF-8";
+    LC_MEASUREMENT    = "en_US.UTF-8";
+    LC_MONETARY       = "en_US.UTF-8";
+    LC_NAME           = "en_US.UTF-8";
+    LC_NUMERIC        = "en_US.UTF-8";
+    LC_PAPER          = "en_US.UTF-8";
+    LC_TELEPHONE      = "en_US.UTF-8";
+    LC_TIME           = "en_US.UTF-8";
   };
 
-   # Automatic cleanup/optimization.
-  nix.gc.automatic = true;
-  nix.gc.dates = "daily";
-  nix.gc.options = "--delete-older-than 10d";
-  nix.settings.auto-optimise-store = true;
+  # ── Keyboard Layout ───────────────────────────────────────────────────────────
+  # US layout with AltGr international variant for Spanish accents and ñ
+  services.xserver.xkb.layout  = "us";
+  services.xserver.xkb.variant = "altgr-intl";
+
+  # ── KDE Plasma Desktop ────────────────────────────────────────────────────────
+  services.displayManager.sddm.enable    = true;
+  services.desktopManager.plasma6.enable = true;
+
+  # ── Printing ──────────────────────────────────────────────────────────────────
+  services.printing.enable = true;
+
+  # ── Sound (PipeWire) ──────────────────────────────────────────────────────────
+  services.pulseaudio.enable = false;
+  security.rtkit.enable      = true;
+  services.pipewire = {
+    enable            = true;
+    alsa.enable       = true;
+    alsa.support32Bit = true;
+    pulse.enable      = true;
+  };
+
+  # ── User Account ──────────────────────────────────────────────────────────────
+  users.users.sircam = {
+    isNormalUser = true;
+    description  = "Cristian J. Hidalgo";
+    extraGroups  = [ "networkmanager" "wheel" "qemu-libvirtd" "libvirtd" ];
+    packages     = with pkgs; [ kdePackages.kate ];
+  };
+
+  # ── Auto Login ────────────────────────────────────────────────────────────────
+  services.displayManager.autoLogin = {
+    enable = true;
+    user   = "sircam";
+  };
+
+  # ── CoolerControl ─────────────────────────────────────────────────────────────
+  programs.coolercontrol.enable = true;
+
+  # ── Allow Unfree Packages ─────────────────────────────────────────────────────
+  nixpkgs.config.allowUnfree = true;
+
+  # ── System Packages ───────────────────────────────────────────────────────────
+  environment.systemPackages = with pkgs; [
+    libvirt
+  ];
+
+  # ── Graphics Stack ────────────────────────────────────────────────────────────
+  hardware.graphics = {
+    enable      = true;
+    enable32Bit = true;
+    extraPackages = with pkgs; [
+      libva-vdpau-driver
+      libvdpau-va-gl
+      nvidia-vaapi-driver
+    ];
+    extraPackages32 = with pkgs.pkgsi686Linux; [
+      libva-vdpau-driver
+      libvdpau-va-gl
+      nvidia-vaapi-driver
+    ];
+  };
+
+  # ── NVIDIA Driver (Pinned 580.142) ────────────────────────────────────────────────
+ hardware.nvidia = {
+    modesetting.enable = true;
+    nvidiaSettings = true;
+    open = false;
+    package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
+    version = "580.142";
+    sha256_64bit = "sha256-IJFfzz/+icNVDPk7YKBKKFRTFQ2S4kaOGRGkNiBEdWM=";
+    sha256_aarch64 = "sha256-0000000000000000000000000000000000000000000=";
+    openSha256 = "sha256-0000000000000000000000000000000000000000000=";
+    settingsSha256 = "sha256-BnrIlj5AvXTfqg/qcBt2OS9bTDDZd3uhf5jqOtTMTQM=";
+    persistencedSha256 = "sha256-0000000000000000000000000000000000000000000=";
+  };
+};
+
+  # ── X Server (NVIDIA) ─────────────────────────────────────────────────────────
+  services.xserver = {
+    enable       = true;
+    videoDrivers = [ "nvidia" ];
+  };
+
+  # ── Session Variables (Wayland + NVIDIA) ──────────────────────────────────────
+  environment.sessionVariables = {
+    GBM_BACKEND               = "nvidia-drm";
+    LIBVA_DRIVER_NAME         = "nvidia";
+    __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+    XDG_SESSION_TYPE          = "wayland";
+  };
+
+  # ── AMD CPU Microcode ─────────────────────────────────────────────────────────
+  hardware.cpu.amd.updateMicrocode = true;
+
+  # ── TLP Power Management (desktop-optimized) ──────────────────────────────────
+  services.tlp.enable = true;
+  services.tlp.settings = {
+    CPU_SCALING_GOVERNOR_ON_AC   = "schedutil";     # Balanced performance and efficiency
+    CPU_BOOST_ON_AC              = 0;               # Disable CPU boost to reduce heat
+    CPU_ENERGY_PERF_POLICY_ON_AC = "balance_power"; # Favor power saving while maintaining performance
+  };
+
+  # ── Disable power-profiles-daemon (conflicts with TLP) ───────────────────────
+  services.power-profiles-daemon.enable = false;
+
+  # ── Power Management ──────────────────────────────────────────────────────────
+  powerManagement.enable          = true;
+  powerManagement.cpuFreqGovernor = null;
+
+  # ── Disable Sleep / Hibernation ───────────────────────────────────────────────
+  systemd.sleep.settings.Sleep = {
+    AllowSuspend              = "no";
+    AllowHibernation          = "no";
+    AllowHybridSleep          = "no";
+    AllowSuspendThenHibernate = "no";
+  };
+
+  # ── Virtualization ────────────────────────────────────────────────────────────
+  virtualisation.libvirtd.enable = true;
+
+  # ── Steam ─────────────────────────────────────────────────────────────────────
+  programs.steam = {
+    enable                                = true;
+    remotePlay.openFirewall               = true;
+    dedicatedServer.openFirewall          = true;
+    localNetworkGameTransfers.openFirewall = true;
+  };
+
+  # ── Nix Store Cleanup / Optimization ─────────────────────────────────────────
+  nix.gc.automatic                   = true;
+  nix.gc.dates                       = "daily";
+  nix.gc.options                     = "--delete-older-than 10d";
+  nix.settings.auto-optimise-store   = true;
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
-  # Disable password prompt.
+  # ── Sudo (no password prompt) ─────────────────────────────────────────────────
   security.sudo.extraRules = [{
     users = [ "sircam" ];
     commands = [{
@@ -124,34 +195,10 @@
     }];
   }];
 
-  # On boot Automatic cleanup.
+  # ── Clean /tmp on Boot ────────────────────────────────────────────────────────
   boot.tmp.cleanOnBoot = true;
 
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
-
-  # List services that you want to enable:
-
-  # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
-
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
-
-  # This value determines the NixOS release from which the default
-  # settings for stateful data, like file locations and database versions
-  # on your system were taken. It‘s perfectly fine and recommended to leave
-  # this value at the release version of the first install of this system.
-  # Before changing this value read the documentation for this option
-  # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "25.11"; # Did you read the comment?
-
+  # ── State Version ─────────────────────────────────────────────────────────────
+  system.stateVersion = "25.05";
 }
+
