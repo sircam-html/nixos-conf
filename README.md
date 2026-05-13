@@ -9,7 +9,7 @@ Personal NixOS setup running **26.05 Unstable** with KDE Plasma 6 on a hybrid AM
 | OS | NixOS 26.05 Unstable |
 | Desktop | KDE Plasma 6 (Wayland) |
 | CPU | AMD (pstate + schedutil) |
-| GPU | NVIDIA (Legacy_580) / Pinned 580.142 |
+| GPU | NVIDIA Legacy_580 / Pinned 580.142 |
 | Bootloader | systemd-boot + Plymouth (nixos-bgrt theme) |
 | Shell | Fish (with aliases)|
 
@@ -20,7 +20,7 @@ Personal NixOS setup running **26.05 Unstable** with KDE Plasma 6 on a hybrid AM
 
 ## Highlights
 
-- NVIDIA driver `Legacy_580 / Pinned 580.142` for stability
+- NVIDIA driver `Legacy_580 / Pinned 580.142` for Pascal GPU for stability
 - Plymouth animated boot splash with NixOS logo
 - Steam with Proton for gaming
 - Auto cleanup of Nix store older than 10 days
