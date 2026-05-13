@@ -1,4 +1,4 @@
-# NixOS Configuration
+# NixOS Configuration / Legacy_580
 
 Personal NixOS setup running **Unstable** with KDE Plasma 6 on a hybrid AMD/NVIDIA system.
 
@@ -9,7 +9,7 @@ Personal NixOS setup running **Unstable** with KDE Plasma 6 on a hybrid AMD/NVID
 | OS         | NixOS Unstable                                 |
 | Desktop    | KDE Plasma 6 (Wayland)                         |
 | CPU        | AMD (pstate + schedutil)                       |
-| GPU        | NVIDIA GTX 1070 Ti (driver pinned to 580.142)  |
+| GPU        | NVIDIA GTX 1070 Ti (Legacy_580 driver)  |
 | Bootloader | systemd-boot + Plymouth (nixos-bgrt theme)     |
 | Shell      | Fish (with aliases)                            |
 
@@ -20,7 +20,7 @@ Personal NixOS setup running **Unstable** with KDE Plasma 6 on a hybrid AMD/NVID
 
 ## Highlights
 
-- NVIDIA driver pinned to `580.142` for Pascal GPU stability
+- NVIDIA driver pinned to `Legacy_580` for Pascal GPU stability
 - Plymouth animated boot splash with NixOS logo
 - US keyboard layout with AltGr international variant for Spanish accents and ñ
 - Steam with Proton for gaming
