@@ -9,19 +9,19 @@ This configuration uses the `mkDriver` function to "freeze" the driver version, 
 Add this to your `configuration.nix`:
 
 ```nixos
-hardware.nvidia = {
-  modesetting.enable = true;
-  nvidiaSettings = true;
-  open = false;
-  package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
-    version = "580.142";
-    sha256_64bit = "sha256-IJFfzz/+icNVDPk7YKBKKFRTFQ2S4kaOGRGkNiBEdWM=";
-    sha256_aarch64 = "sha256-0000000000000000000000000000000000000000000=";
-    openSha256 = "sha256-0000000000000000000000000000000000000000000=";
-    settingsSha256 = "sha256-BnrIlj5AvXTfqg/qcBt2OS9bTDDZd3uhf5jqOtTMTQM=";
-    persistencedSha256 = "sha256-0000000000000000000000000000000000000000000=";
+  hardware.nvidia = {
+    modesetting.enable = true;
+    nvidiaSettings     = true;
+    open               = false;
+    package            = config.boot.kernelPackages.nvidiaPackages.mkDriver {
+      version            = "580.142";
+      sha256_64bit       = "sha256-IJFfzz/+icNVDPk7YKBKKFRTFQ2S4kaOGRGkNiBEdWM=";
+      sha256_aarch64     = "sha256-0000000000000000000000000000000000000000000=";
+      openSha256         = "sha256-0000000000000000000000000000000000000000000=";
+      settingsSha256     = "sha256-BnrIlj5AvXTfqg/qcBt2OS9bTDDZd3uhf5jqOtTMTQM=";
+      persistencedSha256 = "sha256-0000000000000000000000000000000000000000000=";
+    };
   };
-};
 ```
 
 ## 📝 Note on the Hashes
