@@ -20,7 +20,7 @@ Personal NixOS setup running **Unstable** with KDE Plasma 6 on a hybrid AMD/NVID
 
 ## Highlights
 
-- NVIDIA driver pinned to `Legacy_580` for Pascal GPU stability
+- NVIDIA driver using `Legacy_580` for Pascal GPU stability
 - Plymouth animated boot splash with NixOS logo
 - US keyboard layout with AltGr international variant for Spanish accents and ñ
 - Steam with Proton for gaming
