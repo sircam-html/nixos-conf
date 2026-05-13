@@ -1,17 +1,17 @@
-# NixOS Configurations
+# NixOS Configuration
 
-Personal NixOS setup running **26.05 Unstable** with KDE Plasma 6 on a hybrid AMD/NVIDIA system.
+Personal NixOS setup running **Unstable** with KDE Plasma 6 on a hybrid AMD/NVIDIA system.
 
 ## System
 
-| Component | Details |
-|-----------|---------|
-| OS | NixOS 26.05 Unstable |
-| Desktop | KDE Plasma 6 (Wayland) |
-| CPU | AMD (pstate + schedutil) |
-| GPU | NVIDIA Legacy_580 / Pinned 580.142 |
-| Bootloader | systemd-boot + Plymouth (nixos-bgrt theme) |
-| Shell | Fish (with aliases)|
+| Component  | Details                                        |
+|------------|------------------------------------------------|
+| OS         | NixOS Unstable                                 |
+| Desktop    | KDE Plasma 6 (Wayland)                         |
+| CPU        | AMD (pstate + schedutil)                       |
+| GPU        | NVIDIA GTX 1070 Ti (driver pinned to 580.142)  |
+| Bootloader | systemd-boot + Plymouth (nixos-bgrt theme)     |
+| Shell      | Fish (with aliases)                            |
 
 ## Structure
 
@@ -20,9 +20,33 @@ Personal NixOS setup running **26.05 Unstable** with KDE Plasma 6 on a hybrid AM
 
 ## Highlights
 
-- NVIDIA driver `Legacy_580 / Pinned 580.142` for Pascal GPU for stability
+- NVIDIA driver pinned to `580.142` for Pascal GPU stability
 - Plymouth animated boot splash with NixOS logo
+- US keyboard layout with AltGr international variant for Spanish accents and ñ
 - Steam with Proton for gaming
 - Auto cleanup of Nix store older than 10 days
 - TLP power management optimized for desktop
 - Virtualization via libvirt/virt-manager
+
+## Useful Aliases
+
+| Alias    | Description                                      |
+|----------|--------------------------------------------------|
+| `update` | Updates system and Home Manager                  |
+| `trim`   | Full system cleanup and store optimization       |
+| `hm`     | Home Manager switch                              |
+| `nr`     | NixOS rebuild switch                             |
+| `cn`     | Edit system configuration                        |
+| `hn`     | Edit home configuration                          |
+| `ff`     | Fastfetch with custom preset                     |
+| `gc`     | Nix garbage collect                              |
+| `dg`     | Delete old generations and update bootloader     |
+| `op`     | Nix store optimise                               |
+| `ps`     | Restart KDE Plasma shell                         |
+
+## Apply
+
+```bash
+sudo nixos-rebuild switch
+home-manager switch
+```
