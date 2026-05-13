@@ -31,6 +31,7 @@ in {
     kdePackages.yakuake
     kdePackages.sweeper
     kdePackages.kcalc
+    kdePackages.kate
 
     # Gaming / Streaming
     coolercontrol.coolercontrol-gui
@@ -78,13 +79,15 @@ in {
     enable = true;
     shellAliases = {
       # Update system and home-manager
-      up     = "sudo nix-channel --update && sudo nixos-rebuild switch --upgrade && home-manager switch";
+      update     = "sudo nix-channel --update && sudo nixos-rebuild switch --upgrade && home-manager switch";
+      # Full system cleanup
+      trim   = "sudo nix-collect-garbage -d && sudo nix-env --delete-generations old && sudo nixos-rebuild boot && home-manager expire-generations '2 weeks ago' && nix store optimise";
       # Home Manager switch
       hm     = "home-manager switch";
       # NixOS rebuild
       nr     = "sudo nixos-rebuild switch";
       # Edit system config
-      cn     = "sudo gedit /etc/nixos/configuration.nix";
+      cn     = "kate /etc/nixos/configuration.nix";
       # Edit home config
       hn     = "kate ~/.config/home-manager/home.nix";
       # Nix garbage collect

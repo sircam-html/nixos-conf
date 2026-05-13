@@ -77,7 +77,6 @@
     isNormalUser = true;
     description  = "Cristian J. Hidalgo";
     extraGroups  = [ "networkmanager" "wheel" "qemu-libvirtd" "libvirtd" ];
-    packages     = with pkgs; [ kdePackages.kate ];
   };
 
   # ── Auto Login ────────────────────────────────────────────────────────────────
@@ -113,20 +112,20 @@
     ];
   };
 
-  # ── NVIDIA Driver (Pinned 580.142) ────────────────────────────────────────────────
- hardware.nvidia = {
+# ── NVIDIA Driver (Pinned 580.142) ────────────────────────────────────────────
+  hardware.nvidia = {
     modesetting.enable = true;
-    nvidiaSettings = true;
-    open = false;
-    package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
-    version = "580.142";
-    sha256_64bit = "sha256-IJFfzz/+icNVDPk7YKBKKFRTFQ2S4kaOGRGkNiBEdWM=";
-    sha256_aarch64 = "sha256-0000000000000000000000000000000000000000000=";
-    openSha256 = "sha256-0000000000000000000000000000000000000000000=";
-    settingsSha256 = "sha256-BnrIlj5AvXTfqg/qcBt2OS9bTDDZd3uhf5jqOtTMTQM=";
-    persistencedSha256 = "sha256-0000000000000000000000000000000000000000000=";
+    nvidiaSettings     = true;
+    open               = false;
+    package            = config.boot.kernelPackages.nvidiaPackages.mkDriver {
+      version            = "580.142";
+      sha256_64bit       = "sha256-IJFfzz/+icNVDPk7YKBKKFRTFQ2S4kaOGRGkNiBEdWM=";
+      sha256_aarch64     = "sha256-0000000000000000000000000000000000000000000=";
+      openSha256         = "sha256-0000000000000000000000000000000000000000000=";
+      settingsSha256     = "sha256-BnrIlj5AvXTfqg/qcBt2OS9bTDDZd3uhf5jqOtTMTQM=";
+      persistencedSha256 = "sha256-0000000000000000000000000000000000000000000=";
+    };
   };
-};
 
   # ── X Server (NVIDIA) ─────────────────────────────────────────────────────────
   services.xserver = {
