@@ -31,10 +31,10 @@ in {
     kdePackages.yakuake
     kdePackages.sweeper
     kdePackages.kcalc
+    kdePackages.kate
 
     # Gaming / Streaming
     coolercontrol.coolercontrol-gui
-    bottles-unwrapped
     obs-studio
     mangohud
     goverlay
@@ -48,9 +48,8 @@ in {
     discord
 
     # Dev / Productivity
-    hydra-check    
+    hydra-check
     devbox
-    gedit
     htop
     git
 
@@ -68,7 +67,7 @@ in {
   ];
 
   # ── Programs ──────────────────────────────────────────────────────────────────
-  programs.home-manager.enable  = true;
+  programs.home-manager.enable = true;
 
   # ── Fastfetch ─────────────────────────────────────────────────────────────────
   # Managed via Home Manager, preset set via ff alias
@@ -78,13 +77,15 @@ in {
     enable = true;
     shellAliases = {
       # Update system and home-manager
-      up     = "sudo nix-channel --update && sudo nixos-rebuild switch --upgrade && home-manager switch";
+      update = "sudo nix-channel --update && sudo nixos-rebuild switch --upgrade && home-manager switch";
+      # Full system cleanup
+      trim   = "sudo nix-collect-garbage -d && sudo nix-env --delete-generations old && sudo nixos-rebuild boot && home-manager expire-generations '2 weeks ago' && nix store optimise";
       # Home Manager switch
       hm     = "home-manager switch";
       # NixOS rebuild
       nr     = "sudo nixos-rebuild switch";
       # Edit system config
-      cn     = "sudo gedit /etc/nixos/configuration.nix";
+      cn     = "kate /etc/nixos/configuration.nix";
       # Edit home config
       hn     = "kate ~/.config/home-manager/home.nix";
       # Nix garbage collect
@@ -96,11 +97,10 @@ in {
       # Restart KDE Plasma shell
       ps     = "systemctl --user restart plasma-plasmashell";
       # Fastfetch with custom preset
-      ff     = "fastfetch -c examples/7";
+      ff     = "fastfetch -c examples/25";
       # Hydra status check
       hc     = "hydra-check";
     };
   };
 
 }
-

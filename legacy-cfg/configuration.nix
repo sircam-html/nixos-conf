@@ -1,4 +1,4 @@
-# NixOS Unstable + NVIDIA legacy_580 driver
+# NixOS Unstable + NVIDIA (Legacy_580)
 # User apps: Home Manager (home.nix = 100% pure)
 
 { config, pkgs, ... }:
@@ -77,7 +77,6 @@
     isNormalUser = true;
     description  = "Cristian J. Hidalgo";
     extraGroups  = [ "networkmanager" "wheel" "qemu-libvirtd" "libvirtd" ];
-    packages     = with pkgs; [ kdePackages.kate ];
   };
 
   # ── Auto Login ────────────────────────────────────────────────────────────────
@@ -113,13 +112,13 @@
     ];
   };
 
-  # ── NVIDIA Driver (Legacy 580) ────────────────────────────────────────────────
-  hardware.nvidia = {
-    modesetting.enable = true;
-    nvidiaSettings     = true;
-    open               = false;
-    package            = config.boot.kernelPackages.nvidiaPackages.legacy_580;
-  };
+# ── NVIDIA Driver (Legacy_580) ───────────────────────────────────────────────────
+hardware.nvidia = {
+  modesetting.enable = true;
+  nvidiaSettings     = true;
+  open               = false;
+  package            = config.boot.kernelPackages.nvidiaPackages.legacy_580;
+};
 
   # ── X Server (NVIDIA) ─────────────────────────────────────────────────────────
   services.xserver = {
