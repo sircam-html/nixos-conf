@@ -6,7 +6,7 @@ Personal NixOS setup running **Unstable** with KDE Plasma 6 on a hybrid AMD/NVID
 
 | Component  | Details                                        |
 |------------|------------------------------------------------|
-| OS         | NixOS Unstable                                 |
+| OS         | NixOS Stable                                 |
 | Desktop    | KDE Plasma 6 (Wayland)                         |
 | CPU        | AMD (pstate + schedutil)                       |
 | GPU        | NVIDIA GTX 1070 Ti (driver pinned to 580.142)  |
