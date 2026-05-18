@@ -35,7 +35,6 @@ in {
     kdePackages.yakuake
     kdePackages.sweeper
     kdePackages.kcalc
-    kdePackages.kate
 
     # Gaming / Streaming
     coolercontrol.coolercontrol-gui
@@ -103,10 +102,19 @@ in {
       ps     = "systemctl --user restart plasma-plasmashell";
       # Fastfetch with custom preset
       ff     = "fastfetch -c examples/25";
-      # Hydra build status check
-      hc     = "hydra-check";
       # Fix Downloads folder permissions
       fx     = "sudo chmod 755 ~/Downloads/ && sudo chown -R sircam:users ~/Downloads/ && sudo chmod -R 644 ~/Downloads/*";
+      # Check NixOS and Home Manager versions and revision
+      ver    = "nixos-version && nixos-version --revision && home-manager --version";
+      # Consultation with hydra-check
+      hc     = "hydra-check";
+
+      # Check NVIDIA legacy_580 availability on 25.11
+      nv11  = "NIXPKGS_ALLOW_UNFREE=1 nix eval github:NixOS/nixpkgs/nixos-25.11#linuxPackages.nvidiaPackages.legacy_580.version";
+     # Check NVIDIA legacy_580 availability on unstable
+     nvun  = "NIXPKGS_ALLOW_UNFREE=1 nix eval github:NixOS/nixpkgs/nixos-unstable#linuxPackages.nvidiaPackages.legacy_580.version";
+     # Check NVIDIA legacy_580 availability on 26.05
+     nv26  = "NIXPKGS_ALLOW_UNFREE=1 nix eval github:NixOS/nixpkgs/nixos-26.05#linuxPackages.nvidiaPackages.legacy_580.version";
     };
   };
 

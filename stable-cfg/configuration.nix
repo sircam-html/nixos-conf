@@ -77,6 +77,7 @@
     isNormalUser = true;
     description  = "Cristian J. Hidalgo";
     extraGroups  = [ "networkmanager" "wheel" "qemu-libvirtd" "libvirtd" ];
+    packages     = with pkgs; [ kdePackages.kate ];
   };
 
   # ── Auto Login ────────────────────────────────────────────────────────────────
