@@ -47,9 +47,9 @@ in {
     wine
 
     # Browsers
-    chromium
-    ferdium
+    brave
     discord
+    ferdium
 
     # Dev / Productivity
     hydra-check
@@ -83,7 +83,7 @@ in {
       # Update system and home-manager
       update = "sudo nix-channel --update && sudo nixos-rebuild switch --upgrade && home-manager switch";
       # Full system cleanup
-      trim   = "sudo nix-collect-garbage -d && sudo nix-env --delete-generations old && sudo nixos-rebuild boot && home-manager expire-generations '2 weeks ago' && nix store optimise";
+      trim = "nix-collect-garbage -d && sudo nix-collect-garbage -d && sudo nix-env --delete-generations old && sudo nixos-rebuild boot && home-manager expire-generations '2 weeks ago' && nix store optimise";
       # Home Manager switch
       hm     = "home-manager switch";
       # NixOS rebuild
@@ -93,7 +93,7 @@ in {
       # Edit home config
       hn     = "kate ~/.config/home-manager/home.nix";
       # Nix garbage collect
-      gc     = "sudo nix-collect-garbage -d";
+      gc = "nix-collect-garbage -d && sudo nix-collect-garbage -d";
       # Delete old Nix generations and update bootloader
       dg     = "sudo nix-env --delete-generations old && sudo nixos-rebuild boot";
       # Nix store optimise
@@ -115,6 +115,9 @@ in {
      nvun  = "NIXPKGS_ALLOW_UNFREE=1 nix eval github:NixOS/nixpkgs/nixos-unstable#linuxPackages.nvidiaPackages.legacy_580.version";
      # Check NVIDIA legacy_580 availability on 26.05
      nv26  = "NIXPKGS_ALLOW_UNFREE=1 nix eval github:NixOS/nixpkgs/nixos-26.05#linuxPackages.nvidiaPackages.legacy_580.version";
+
+     # Launch Caddy server inside Devbox for local websites
+      servers = "cd /home/sircam/_devbox/ && devbox run caddy run --config Caddyfile";
     };
   };
 

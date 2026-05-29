@@ -1,4 +1,4 @@
-# NixOS Unstable / Home Manager configuration
+# NixOS 25.11 Stable  / Home Manager configuration
 # User apps: 100% pure, no system packages here
 
 { config, pkgs, ... }:
@@ -10,6 +10,10 @@ let
     "https://github.com/youwen5/zen-browser-flake/archive/master.tar.gz"
   ) { inherit pkgs; };
 
+     # Bottles override (remove warning popup)
+      bottlesNoWarning = pkgs.bottles.override {
+        removeWarningPopup = true;
+      };
 in {
 
   # ── User ──────────────────────────────────────────────────────────────────────
@@ -31,10 +35,10 @@ in {
     kdePackages.yakuake
     kdePackages.sweeper
     kdePackages.kcalc
-    kdePackages.kate
 
     # Gaming / Streaming
     coolercontrol.coolercontrol-gui
+    bottlesNoWarning
     obs-studio
     mangohud
     goverlay
@@ -43,9 +47,9 @@ in {
     wine
 
     # Browsers
-    chromium
-    ferdium
+    brave
     discord
+    ferdium
 
     # Dev / Productivity
     hydra-check
@@ -54,8 +58,7 @@ in {
     git
 
     # Multimedia
-    pear-desktop  # YouTube Music desktop client
-    stellarium
+    youtube-music
     unrar
     vlc
 
@@ -75,11 +78,12 @@ in {
 
   programs.fish = {
     enable = true;
+
     shellAliases = {
       # Update system and home-manager
       update = "sudo nix-channel --update && sudo nixos-rebuild switch --upgrade && home-manager switch";
       # Full system cleanup
-      trim   = "sudo nix-collect-garbage -d && sudo nix-env --delete-generations old && sudo nixos-rebuild boot && home-manager expire-generations '2 weeks ago' && nix store optimise";
+      trim = "nix-collect-garbage -d && sudo nix-collect-garbage -d && sudo nix-env --delete-generations old && sudo nixos-rebuild boot && home-manager expire-generations '2 weeks ago' && nix store optimise";
       # Home Manager switch
       hm     = "home-manager switch";
       # NixOS rebuild
@@ -89,7 +93,7 @@ in {
       # Edit home config
       hn     = "kate ~/.config/home-manager/home.nix";
       # Nix garbage collect
-      gc     = "sudo nix-collect-garbage -d";
+      gc = "nix-collect-garbage -d && sudo nix-collect-garbage -d";
       # Delete old Nix generations and update bootloader
       dg     = "sudo nix-env --delete-generations old && sudo nixos-rebuild boot";
       # Nix store optimise
@@ -98,8 +102,22 @@ in {
       ps     = "systemctl --user restart plasma-plasmashell";
       # Fastfetch with custom preset
       ff     = "fastfetch -c examples/25";
-      # Hydra status check
+      # Fix Downloads folder permissions
+      fx     = "sudo chmod 755 ~/Downloads/ && sudo chown -R sircam:users ~/Downloads/ && sudo chmod -R 644 ~/Downloads/*";
+      # Check NixOS and Home Manager versions and revision
+      ver    = "nixos-version && nixos-version --revision && home-manager --version";
+      # Consultation with hydra-check
       hc     = "hydra-check";
+
+      # Check NVIDIA legacy_580 availability on 25.11
+      nv11  = "NIXPKGS_ALLOW_UNFREE=1 nix eval github:NixOS/nixpkgs/nixos-25.11#linuxPackages.nvidiaPackages.legacy_580.version";
+     # Check NVIDIA legacy_580 availability on unstable
+     nvun  = "NIXPKGS_ALLOW_UNFREE=1 nix eval github:NixOS/nixpkgs/nixos-unstable#linuxPackages.nvidiaPackages.legacy_580.version";
+     # Check NVIDIA legacy_580 availability on 26.05
+     nv26  = "NIXPKGS_ALLOW_UNFREE=1 nix eval github:NixOS/nixpkgs/nixos-26.05#linuxPackages.nvidiaPackages.legacy_580.version";
+
+     # Launch Caddy server inside Devbox for local websites
+      servers = "cd /home/sircam/_devbox/ && devbox run caddy run --config Caddyfile";
     };
   };
 
