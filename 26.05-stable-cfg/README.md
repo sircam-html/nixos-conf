@@ -1,6 +1,6 @@
 # NixOS Configuration / Pinned Nvidia Drivers 580.142
 
-Personal NixOS setup running **Unstable** with KDE Plasma 6 on a hybrid AMD/NVIDIA system.
+Personal NixOS setup running **Stable 26.05** with KDE Plasma 6 on a hybrid AMD/NVIDIA system.
 
 ## System
 
