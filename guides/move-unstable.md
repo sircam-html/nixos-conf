@@ -11,13 +11,13 @@ This document outlines the steps taken to successfully transition the NixOS syst
 ## Migration Guide
 
 ### 1. Update the System (Root) Channels
-The system-wide channels must point to the specific repository release URLs. Root domain shortcuts will cause HTTP 404 download errors. Run these commands with `sudo` privileges:
+The system-wide channels must point to specific repository release URLs. Root domain shortcuts will cause HTTP 404 download errors. Run these commands with `sudo` privileges:
 
 ```bash
 # Overwrite the system channel to point to nixos-unstable
 sudo nix-channel --add https://nixos.org nixos
 
-# Overwrite the system home-manager channel to point to the correct tarball archive
+# Overwrite the system home-manager channel to point to the correct archive
 sudo nix-channel --add https://github.com home-manager
 ```
 
@@ -29,7 +29,7 @@ nix-channel --add https://github.com home-manager
 ```
 
 ### 3. Verify Channel Layout
-Before building, verify that the URLs are fully qualified. Using generic root domains (`https://nixos.org` or `https://github.com`) will break the Nix build toolchain.
+Before downloading package expressions, verify that the URLs are fully qualified. Using generic root domains (`https://nixos.org` or `https://github.com`) will break the Nix build toolchain.
 
 * Check system channels: `sudo nix-channel --list`
 * Check user channels: `nix-channel --list`
@@ -39,17 +39,20 @@ Before building, verify that the URLs are fully qualified. Using generic root do
 * `home-manager` -> `https://github.com`
 
 ### 4. Fetch Packages and Apply Changes
-Fetch the new package definitions separately, then rebuild both the system and user environments:
+Fetch the package definitions, bootstrap the updated Home Manager tool to prevent syntax compiler mismatch crashes, and then rebuild your environments:
 
 ```bash
-# Pull down the latest package expressions for root and user
+# 1. Pull down the latest package expressions for root and user profiles
 sudo nix-channel --update
 nix-channel --update
 
-# Switch the operating system to unstable
+# 2. Bootstrap/Update the Home Manager CLI tool itself to match the new channel attributes
+nix-shell '<home-manager>' -A install
+
+# 3. Switch the operating system to unstable
 sudo nixos-rebuild switch
 
-# Switch the user environment to unstable
+# 4. Compile and switch the user profile cleanly
 home-manager switch
 ```
 
