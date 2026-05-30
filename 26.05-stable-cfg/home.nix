@@ -1,4 +1,4 @@
-# NixOS 26.05 Stable  / Home Manager configuration
+# NixOS 26.05 Stable / Home Manager configuration
 # User apps: 100% pure, no system packages here
 
 { config, pkgs, ... }:
@@ -10,10 +10,11 @@ let
     "https://github.com/youwen5/zen-browser-flake/archive/master.tar.gz"
   ) { inherit pkgs; };
 
-     # Bottles override (remove warning popup)
-      bottlesNoWarning = pkgs.bottles.override {
-        removeWarningPopup = true;
-      };
+  # ── Bottles (remove warning popup) ───────────────────────────────────────────
+  bottlesNoWarning = pkgs.bottles.override {
+    removeWarningPopup = true;
+  };
+
 in {
 
   # ── User ──────────────────────────────────────────────────────────────────────
@@ -23,6 +24,9 @@ in {
   home.enableNixpkgsReleaseCheck = false;
   news.display               = "silent";
   nixpkgs.config.allowUnfree = true;
+
+  # ── Fonts ─────────────────────────────────────────────────────────────────────
+  fonts.fontconfig.enable = true;
 
   # ── Packages ──────────────────────────────────────────────────────────────────
   home.packages = (with pkgs; [
@@ -65,6 +69,10 @@ in {
     # VMs
     virt-manager
 
+    # Fonts
+    nerd-fonts.jetbrains-mono  # great terminal font
+    nerd-fonts.fira-code
+
   ]) ++ [
     zen.default  # Zen Browser — sourced outside nixpkgs via fetchTarball
   ];
@@ -81,43 +89,41 @@ in {
 
     shellAliases = {
       # Update system and home-manager
-      update = "sudo nix-channel --update && sudo nixos-rebuild switch --upgrade && home-manager switch";
+      update      = "sudo nix-channel --update && sudo nixos-rebuild switch --upgrade && home-manager switch";
+      # Verify critical packages on Hydra before updating — aborts if any fail
+      safe-update = "bash ~/.local/bin/safe-update.sh";
       # Full system cleanup
-      trim = "nix-collect-garbage -d && sudo nix-collect-garbage -d && sudo nix-env --delete-generations old && sudo nixos-rebuild boot && home-manager expire-generations '2 weeks ago' && nix store optimise";
+      trim        = "nix-collect-garbage -d && sudo nix-collect-garbage -d && sudo nix-env --delete-generations old && sudo nixos-rebuild boot && home-manager expire-generations '2 weeks ago' && nix store optimise";
       # Home Manager switch
-      hm     = "home-manager switch";
+      hm          = "home-manager switch";
       # NixOS rebuild
-      nr     = "sudo nixos-rebuild switch";
+      nr          = "sudo nixos-rebuild switch";
       # Edit system config
-      cn     = "kate /etc/nixos/configuration.nix";
+      cn          = "kate /etc/nixos/configuration.nix";
       # Edit home config
-      hn     = "kate ~/.config/home-manager/home.nix";
-      # Nix garbage collect
-      gc = "nix-collect-garbage -d && sudo nix-collect-garbage -d";
+      hn          = "kate ~/.config/home-manager/home.nix";
+      # Nix garbage collect (user + system)
+      gc          = "nix-collect-garbage -d && sudo nix-collect-garbage -d";
       # Delete old Nix generations and update bootloader
-      dg     = "sudo nix-env --delete-generations old && sudo nixos-rebuild boot";
+      dg          = "sudo nix-env --delete-generations old && sudo nixos-rebuild boot";
       # Nix store optimise
-      op     = "nix store optimise";
+      op          = "nix store optimise";
       # Restart KDE Plasma shell
-      ps     = "systemctl --user restart plasma-plasmashell";
+      ps          = "systemctl --user restart plasma-plasmashell";
       # Fastfetch with custom preset
-      ff     = "fastfetch -c examples/25";
+      ff          = "fastfetch -c examples/25";
       # Fix Downloads folder permissions
-      fx     = "sudo chmod 755 ~/Downloads/ && sudo chown -R sircam:users ~/Downloads/ && sudo chmod -R 644 ~/Downloads/*";
+      fx          = "sudo chmod 755 ~/Downloads/ && sudo chown -R sircam:users ~/Downloads/ && sudo chmod -R 644 ~/Downloads/*";
       # Check NixOS and Home Manager versions and revision
-      ver    = "nixos-version && nixos-version --revision && home-manager --version";
-      # Consultation with hydra-check
-      hc     = "hydra-check";
-
-      # Check NVIDIA legacy_580 availability on 25.11
-      nv11  = "NIXPKGS_ALLOW_UNFREE=1 nix eval github:NixOS/nixpkgs/nixos-25.11#linuxPackages.nvidiaPackages.legacy_580.version";
-     # Check NVIDIA legacy_580 availability on unstable
-     nvun  = "NIXPKGS_ALLOW_UNFREE=1 nix eval github:NixOS/nixpkgs/nixos-unstable#linuxPackages.nvidiaPackages.legacy_580.version";
-     # Check NVIDIA legacy_580 availability on 26.05
-     nv26  = "NIXPKGS_ALLOW_UNFREE=1 nix eval github:NixOS/nixpkgs/nixos-26.05#linuxPackages.nvidiaPackages.legacy_580.version";
-
-     # Launch Caddy server inside Devbox for local websites
-      servers = "cd /home/sircam/_devbox/ && devbox run caddy run --config Caddyfile";
+      ver         = "nixos-version && nixos-version --revision && home-manager --version";
+      # Hydra build status check
+      hc          = "hydra-check";
+      # Check NVIDIA legacy_580 availability per channel
+      nv11        = "NIXPKGS_ALLOW_UNFREE=1 nix eval github:NixOS/nixpkgs/nixos-25.11#linuxPackages.nvidiaPackages.legacy_580.version";
+      nvun        = "NIXPKGS_ALLOW_UNFREE=1 nix eval github:NixOS/nixpkgs/nixos-unstable#linuxPackages.nvidiaPackages.legacy_580.version";
+      nv26        = "NIXPKGS_ALLOW_UNFREE=1 nix eval github:NixOS/nixpkgs/nixos-26.05#linuxPackages.nvidiaPackages.legacy_580.version";
+      # Launch Caddy server inside Devbox for local websites
+      servers     = "cd /home/sircam/_devbox/ && devbox run caddy run --config Caddyfile";
     };
   };
 
