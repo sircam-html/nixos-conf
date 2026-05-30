@@ -1,13 +1,13 @@
-# NixOS Configuration / Pinned 580.142
+# NixOS Configuration / Pinned Nvidia Drivers 580.142
 
-Personal NixOS setup running **Unstable** with KDE Plasma 6 on a hybrid AMD/NVIDIA system.
+Personal NixOS setup running **Stable 25.11** with KDE Plasma 6 on a hybrid AMD/NVIDIA system.
 
 ## System
 
 | Component  | Details                                        |
 |------------|------------------------------------------------|
 | OS         | NixOS Stable                                 |
-| Desktop    | KDE Plasma 6 (Wayland)                         |
+| Desktop    | KDE Plasma 6.5 (Wayland)                         |
 | CPU        | AMD (pstate + schedutil)                       |
 | GPU        | NVIDIA GTX 1070 Ti (driver pinned to 580.142)  |
 | Bootloader | systemd-boot + Plymouth (nixos-bgrt theme)     |
