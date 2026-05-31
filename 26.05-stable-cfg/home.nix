@@ -1,4 +1,4 @@
-# NixOS 26.05 Stable / Home Manager configuration
+# NixOS 26.05-pre / Home Manager configuration
 # User apps: 100% pure, no system packages here
 
 { config, pkgs, ... }:
