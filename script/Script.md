@@ -16,8 +16,17 @@ A high-performance, fully declarative NixOS and Home Manager update shield desig
 
 When you trigger the update sequence, the script executes three consecutive stages:
 
-Step 1: Local Audit ──> Extracts system packages & Home Manager profile in milliseconds.Step 2: Dynamic Sync ──> Evaluates allowed unfree apps & maps proper Hydra attributes.Step 3: Hydra Query ──> Checks upstream status for your unique packages on NixOS 26.05.❌ ANY package FAILED ──> Abort Update (Protects system state)✅ ALL packages GREEN ──> Executes Upgrade Sequence
+STEP 1: [Local Audit]
+        └──> Extracts system packages & Home Manager profile.
 
+STEP 2: [Dynamic Sync]
+        └──> Evaluates allowed unfree apps & maps Hydra paths.
+
+STEP 3: [Hydra Query]
+        └──> Checks status for 34 unique packages on 26.05.
+             │
+             ├──> [❌ FAILED] ──> Abort Update!
+             └──> [✅ GREEN]  ──> Running update...
 
 ---
 
