@@ -16,13 +16,13 @@ A high-performance, fully declarative NixOS and Home Manager update shield desig
 
 ```text
 STEP 1: [Local Audit]
-        └──> Extracts system packages & Home Manager profile.
+        └──> Dynamically extracts all system packages & Home Manager profiles.
 
 STEP 2: [Dynamic Sync]
-        └──> Evaluates allowed unfree apps & maps Hydra paths.
+        └──> Evaluates allowed unfree apps & maps proper Hydra paths.
 
 STEP 3: [Hydra Query]
-        └──> Checks status for 34 unique packages on 26.05.
+        └──> Checks status for ALL your unique packages on 26.05.
              │
              ├──> [❌ FAILED] ──> Abort Update! (Protects system state)
              └──> [✅ GREEN]  ──> Running update... (Executes Upgrade Sequence)
@@ -59,15 +59,15 @@ let
     fi
 
     echo "🔍 Fetching currently installed packages (System + Home Manager)..."
-    user_pkgs=\$(home-manager packages 2>/dev/null \(\vert{} \text{\$\{}\)pkgs.gawk\}/bin/awk '{print \$1}')
-    system_pkgs=\$(\(\text{\$\{}\)pkgs.nix\}/bin/nix-env -p /run/current-system/sw -q 2>/dev/null)
+    user_pkgs=\$(home-manager packages 2>/dev/null | \${pkgs.gawk}/bin/awk '{print \$1}')
+    system_pkgs=\$(\${pkgs.nix}/bin/nix-env -p /run/current-system/sw -q 2>/dev/null)
 
     packages=()
     while IFS= read -r pkg; do
       [[ -z "\$pkg" ]] && continue
       [[ "\$pkg" =~ ^(hm-session-vars.*|home-configuration-reference.*|home-manager-path|safe-update)\$ ]] && continue
       packages+=("\$pkg")
-    done < <(printf "%s\n%s" "\$user_pkgs" "\$system_pkgs" \(\vert{} \text{\$\{}\)pkgs.gnused\}/bin/sed -E 's/-[0-9](\.[0-9])*.*//' | sort -u)
+    done < <(printf "%s\n%s" "\$user_pkgs" "\$system_pkgs" | \${pkgs.gnused}/bin/sed -E 's/-[0-9](\.[0-9])*.*//' | sort -u)
 
     if [ ''\${#packages[@]} -eq 0 ]; then
       echo "❌ Error: No packages detected in your profile. Aborting."
@@ -94,18 +94,18 @@ let
           ;;
       esac
 
-      if ! result=\$(\(\text{\$\{}\)pkgs.hydra-check\}/bin/hydra-check "\$hydra_name" --channel "\$CHANNEL" 2>&1); then
+      if ! result=\$(\${pkgs.hydra-check}/bin/hydra-check "\$hydra_name" --channel "\$CHANNEL" 2>&1); then
         echo "⚠️  \$hydra_name → Not found or query error (Skipped)"
         continue
       fi
 
-      if echo "\$result" \(\vert{} \text{\$\{}\)pkgs.gnugrep\}/bin/grep -q "✔"; then
+      if echo "\$result" | \${pkgs.gnugrep}/bin/grep -q "✔"; then
         echo "✅ \$pkg → OK"
-      elif echo "\$result" \(\vert{} \text{\$\{}\)pkgs.gnugrep\}/bin/grep -q "✖"; then
+      elif echo "\$result" | \${pkgs.gnugrep}/bin/grep -q "✖"; then
         echo "❌ \$pkg → FAILED"
         FAILED=1
       else
-        echo "⚠️  \$pkg → Unknown or unbuilt status"
+        echo "⚠️   Clyde → Unknown or unbuilt status"
       fi
     done
 
