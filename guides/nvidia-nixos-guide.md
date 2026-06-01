@@ -41,4 +41,14 @@ If NVIDIA releases a security patch within the 580 branch (e.g., **580.159**), f
 5. **Update Config:** Copy the hash from the error message into your configuration.
 6. **Repeat:** Continue until the rebuild completes successfully.
 
+
+```# ── NVIDIA Driver (Legacy_580) ───────────────────────────────────────────────────
+hardware.nvidia = {
+  modesetting.enable = true;
+  nvidiaSettings     = true;
+  open               = false;
+  package            = config.boot.kernelPackages.nvidiaPackages.legacy_580;
+};
+```
+
 ---
