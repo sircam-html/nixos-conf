@@ -1,5 +1,4 @@
 # NixOS 26.05 Stable + NVIDIA (Pinned 580.142 drivers)
-# User apps: Home Manager (home.nix = 100% pure)
 
 { config, pkgs, ... }:
 

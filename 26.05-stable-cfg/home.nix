@@ -1,5 +1,4 @@
 # NixOS 26.05-pre / Home Manager configuration
-# User apps: 100% pure, no system packages here
 
 { config, pkgs, ... }:
 
@@ -114,6 +113,8 @@ in {
       ff          = "fastfetch -c examples/25";
       # Fix Downloads folder permissions
       fx          = "sudo chmod 755 ~/Downloads/ && sudo chown -R sircam:users ~/Downloads/ && sudo chmod -R 644 ~/Downloads/*";
+      # Check all channels (user + system)
+      ch          = "sudo nix-channel --list && echo '───' && nix-channel --list";
       # Check NixOS and Home Manager versions and revision
       ver         = "nixos-version && nixos-version --revision && home-manager --version";
       # Hydra build status check
