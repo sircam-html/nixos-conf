@@ -41,7 +41,7 @@ let
   safeUpdateScript = pkgs.writeShellScriptBin "safe-update" ''
     #!/usr/bin/env bash
     set -o pipefail
-    CHANNEL="26.05"
+    CHANNEL="26.05" # To upgrade future channels, change this (e.g., "26.11")
     FAILED=0
 
     echo "🔍 Dynamic lookup: Extracting allowed unfree packages from your Nix config..."
