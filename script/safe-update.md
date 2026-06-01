@@ -139,7 +139,7 @@ in {
 For maximum stability on stable release tracks, it is highly recommended to run this update **monthly (every 1st day of the month)**. This ensures that upstream minor bugs are caught and patched before hitting your local setup.
 
 ### 2. Execution Commands
-Simply execute your registered shell alias:
+Simply execute your registered shell alias: safe-update = "safe-update";
 ```fish
 safe-update
 ```
