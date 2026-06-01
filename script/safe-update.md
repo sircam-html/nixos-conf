@@ -60,7 +60,7 @@ let
 
     echo "🔍 Fetching currently installed packages (System + Home Manager)..."
     user_pkgs=\$(home-manager packages 2>/dev/null | \${pkgs.gawk}/bin/awk '{print \$1}')
-    system_pkgs\(=\$(\text{\$\{}\)\)pkgs.nix\}/bin/nix-env -p /run/current-system/sw -q 2>/dev/null)
+    system_pkgs=\$(\${pkgs.nix}/bin/nix-env -p /run/current-system/sw -q 2>/dev/null)
 
     packages=()
     while IFS= read -r pkg; do
