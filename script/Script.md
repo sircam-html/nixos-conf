@@ -4,7 +4,7 @@ A high-performance, fully declarative NixOS and Home Manager update shield desig
 
 ## 🚀 Key Features & Architectural Enhancements
 
-*   **⚡ Instant Profile Auditing ($O(1)$ Complexity):** Replaced slow, global network tree evaluations (`nix-env -qaP`) with localized link-parsing directly from `/run/current-system/sw`. Profile fetching was reduced from **minutes to milliseconds**.
+*   **⚡ Instant Profile Auditing (\(O(1)\) Complexity):** Replaced slow, global network tree evaluations (`nix-env -qaP`) with localized link-parsing directly from `/run/current-system/sw`. Profile fetching was reduced from **minutes to milliseconds**.
 *   **🔮 Dynamic Unfree Detection:** Completely eliminated the need for hardcoded package exception arrays. The script leverages `nix-instantiate` to evaluate your configuration's `allowUnfreePredicate` in real-time, adapting automatically when you add or remove unfree software.
 *   **🫧 Zero False Positives:** Built-in RegEx filters purge internal environment shell noise (such as Fish shell's `hm-session-vars.fish` and manual page structures) to ensure only valid user-facing applications are queried.
 *   **🎯 Smart Package Translation:** Automatically intercepts generic user names for suite packages (e.g., mapping `kcalc`, `yakuake`, or `ktorrent` to `kdePackages.*`) ensuring `hydra-check` correctly maps upstream attribute paths without orphan errors.
@@ -14,8 +14,7 @@ A high-performance, fully declarative NixOS and Home Manager update shield desig
 
 ## 🛠️ How It Works Under the Hood
 
-When you trigger the update sequence, the script executes three consecutive stages:
-
+```text
 STEP 1: [Local Audit]
         └──> Extracts system packages & Home Manager profile.
 
@@ -25,8 +24,9 @@ STEP 2: [Dynamic Sync]
 STEP 3: [Hydra Query]
         └──> Checks status for 34 unique packages on 26.05.
              │
-             ├──> [❌ FAILED] ──> Abort Update!
-             └──> [✅ GREEN]  ──> Running update...
+             ├──> [❌ FAILED] ──> Abort Update! (Protects system state)
+             └──> [✅ GREEN]  ──> Running update... (Executes Upgrade Sequence)
+```
 
 ---
 
@@ -158,5 +158,4 @@ deep-clean
 
 1.  **Absolute Immune System:** Avoids broken builds entirely by checking server health before touching local dependencies.
 2.  **Zero-Maintenance overhead:** Adapts automatically whenever you add, change, or remove software profiles.
-3.  **Maximum NVMe Efficiency:** Paired with a deep-clean schedule, it all
-
+3.  **Maximum NVMe Efficiency:** Paired with a deep-clean schedule, it allows massive space recovery sessions by safely flushing out old generation nodes.
