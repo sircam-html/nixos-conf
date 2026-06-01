@@ -1,6 +1,6 @@
 # 🛡️ Hydra Pre-Update Verifier (`safe-update`)
 
-A high-performance, fully declarative NixOS and Home Manager update shield designed to guarantee system stability [N/A]. This script acts as an intelligent safety gate: it dynamically audits your installed environment, cross-references it with upstream **Hydra build servers**, and aborts the update sequence if any critical package update is broken or unbuilt upstream.
+A high-performance, fully declarative NixOS and Home Manager update shield designed to guarantee system stability. This script acts as an intelligent safety gate: it dynamically audits your installed environment, cross-references it with upstream **Hydra build servers**, and aborts the update sequence if any critical package update is broken or unbuilt upstream.
 
 ## 🚀 Key Features & Architectural Enhancements
 
@@ -60,7 +60,7 @@ let
 
     echo "🔍 Fetching currently installed packages (System + Home Manager)..."
     user_pkgs=\$(home-manager packages 2>/dev/null | \${pkgs.gawk}/bin/awk '{print \$1}')
-    system_pkgs=\$(\${pkgs.nix}/bin/nix-env -p /run/current-system/sw -q 2>/dev/null)
+    system_pkgs\(=\$(\text{\$\{}\)\)pkgs.nix\}/bin/nix-env -p /run/current-system/sw -q 2>/dev/null)
 
     packages=()
     while IFS= read -r pkg; do
@@ -105,7 +105,7 @@ let
         echo "❌ \$pkg → FAILED"
         FAILED=1
       else
-        echo "⚠️   Clyde → Unknown or unbuilt status"
+        echo "⚠️  \$pkg → Unknown or unbuilt status"
       fi
     done
 
