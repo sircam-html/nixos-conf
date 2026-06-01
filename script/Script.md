@@ -59,15 +59,15 @@ let
     fi
 
     echo "🔍 Fetching currently installed packages (System + Home Manager)..."
-    user_pkgs=\$(home-manager packages 2>/dev/null | \${pkgs.gawk}/bin/awk '{print \$1}')
-    system_pkgs=\$(\${pkgs.nix}/bin/nix-env -p /run/current-system/sw -q 2>/dev/null)
+    user_pkgs=\$(home-manager packages 2>/dev/null \(\vert{} \text{\$\{}\)pkgs.gawk\}/bin/awk '{print \$1}')
+    system_pkgs=\$(\(\text{\$\{}\)pkgs.nix\}/bin/nix-env -p /run/current-system/sw -q 2>/dev/null)
 
     packages=()
     while IFS= read -r pkg; do
       [[ -z "\$pkg" ]] && continue
       [[ "\$pkg" =~ ^(hm-session-vars.*|home-configuration-reference.*|home-manager-path|safe-update)\$ ]] && continue
       packages+=("\$pkg")
-    done < <(printf "%s\n%s" "\$user_pkgs" "\$system_pkgs" | \${pkgs.gnused}/bin/sed -E 's/-[0-9](\.[0-9])*.*//' | sort -u)
+    done < <(printf "%s\n%s" "\$user_pkgs" "\$system_pkgs" \(\vert{} \text{\$\{}\)pkgs.gnused\}/bin/sed -E 's/-[0-9](\.[0-9])*.*//' | sort -u)
 
     if [ ''\${#packages[@]} -eq 0 ]; then
       echo "❌ Error: No packages detected in your profile. Aborting."
@@ -94,14 +94,14 @@ let
           ;;
       esac
 
-      if ! result=\$(\${pkgs.hydra-check}/bin/hydra-check "\$hydra_name" --channel "\$CHANNEL" 2>&1); then
+      if ! result=\$(\(\text{\$\{}\)pkgs.hydra-check\}/bin/hydra-check "\$hydra_name" --channel "\$CHANNEL" 2>&1); then
         echo "⚠️  \$hydra_name → Not found or query error (Skipped)"
         continue
       fi
 
-      if echo "\$result" | \${pkgs.gnugrep}/bin/grep -q "✔"; then
+      if echo "\$result" \(\vert{} \text{\$\{}\)pkgs.gnugrep\}/bin/grep -q "✔"; then
         echo "✅ \$pkg → OK"
-      elif echo "\$result" | \${pkgs.gnugrep}/bin/grep -q "✖"; then
+      elif echo "\$result" \(\vert{} \text{\$\{}\)pkgs.gnugrep\}/bin/grep -q "✖"; then
         echo "❌ \$pkg → FAILED"
         FAILED=1
       else
@@ -145,12 +145,24 @@ safe-update
 ```
 
 ### 3. Recommended Complementary Deep Cleaning
-After verifying system health and running your monthly update sequence, follow up 24-48 hours later with a deep store optimization to delete dead links and reclaim NVMe space:
+To completely flush out old generation nodes and reclaim massive amounts of NVMe space 24–48 hours after your monthly upgrade, execute these commands sequentially in your terminal:
 
-```fish
-# Delete old boot generations, clean system garbage, and hardlink identical file duplicates
-deep-clean
+```bash
+# 1. Collect user-level garbage
+nix-collect-garbage -d
+
+# 2. Collect system-level garbage 
+sudo nix-collect-garbage -d
+
+# 3. Purge old system boot entries and refresh bootloader profile
+sudo nix-env --profile /nix/var/nix/profiles/system --delete-generations old
+sudo nixos-rebuild boot
+
+# 4. Optimize the Nix store by hardlinking duplicate files
+nix-store --optimise
 ```
+
+**Why This Exact Order Matters:** Deleting the old boot configurations explicitly breaks structural links to legacy dependencies. Once those old nodes are unlinked from the system profile, the garbage collectors (Steps 1 & 2) wipe them completely, allowing `--optimise` (Step 4) to clean and deduplicate the remaining files.
 
 ---
 
