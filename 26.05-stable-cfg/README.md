@@ -43,10 +43,3 @@ Personal NixOS setup running **Stable 26.05** with KDE Plasma 6 on a hybrid AMD/
 | `dg`     | Delete old generations and update bootloader     |
 | `op`     | Nix store optimise                               |
 | `ps`     | Restart KDE Plasma shell                         |
-
-## Apply
-
-```bash
-sudo nixos-rebuild switch
-home-manager switch
-```
