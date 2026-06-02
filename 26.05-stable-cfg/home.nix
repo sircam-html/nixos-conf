@@ -1,4 +1,4 @@
-# NixOS 26.05-pre / Home Manager configuration
+# NixOS 26.05 Stable | /home/sircam/.config/home-manager/
 
 { config, pkgs, ... }:
 
@@ -86,11 +86,22 @@ in {
   programs.fish = {
     enable = true;
 
+     # NEW: Native Fish function that captures your text and pushes automatically
+    functions = {
+      lazy-push = ''
+        git add .
+        git commit -m "$argv"
+        git push origin main
+      '';
+    };
+
     shellAliases = {
+      # Method 1: The standard internet execution (Perfect for testing download speeds)
+      safe-update-net = "nix run github:sircam-html/safe-update-nix --refresh";
+      # Method 2: The hyper-localized execution (Bypasses downloads, instantly evaluates via system cache)
+      safe-update     = "nix run github:sircam-html/safe-update-nix --override-input nixpkgs nixpkgs";
       # Update system and home-manager
       update      = "sudo nix-channel --update && sudo nixos-rebuild switch --upgrade && home-manager switch";
-      # Verify critical packages on Hydra before updating — aborts if any fail
-      safe-update = "bash ~/.local/bin/safe-update.sh";
       # Full system cleanup
       trim        = "nix-collect-garbage -d && sudo nix-collect-garbage -d && sudo nix-env --delete-generations old && sudo nixos-rebuild boot && home-manager expire-generations '2 weeks ago' && nix store optimise";
       # Home Manager switch
