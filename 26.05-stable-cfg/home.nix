@@ -50,7 +50,6 @@ in {
     wine
 
     # Browsers
-    brave
     discord
     ferdium
 
@@ -96,10 +95,8 @@ in {
     };
 
     shellAliases = {
-      # Method 1: The standard internet execution (Perfect for testing download speeds)
-      safe-update-net = "nix run github:sircam-html/safe-update-nix --refresh";
-      # Method 2: The hyper-localized execution (Bypasses downloads, instantly evaluates via system cache)
-      safe-update     = "nix run github:sircam-html/safe-update-nix --override-input nixpkgs nixpkgs";
+      # Hyper-localized execution (Bypasses downloads, instantly evaluates via system cache)
+      safe-update = "nix run github:sircam-html/safe-update-nix --override-input nixpkgs nixpkgs";
       # Update system and home-manager
       update      = "sudo nix-channel --update && sudo nixos-rebuild switch --upgrade && home-manager switch";
       # Full system cleanup
@@ -122,20 +119,18 @@ in {
       ps          = "systemctl --user restart plasma-plasmashell";
       # Fastfetch with custom preset
       ff          = "fastfetch -c examples/25";
-      # Fix Downloads folder permissions
-      fx          = "sudo chmod 755 ~/Downloads/ && sudo chown -R sircam:users ~/Downloads/ && sudo chmod -R 644 ~/Downloads/*";
       # Check all channels (user + system)
       ch          = "sudo nix-channel --list && echo '───' && nix-channel --list";
       # Check NixOS and Home Manager versions and revision
       ver         = "nixos-version && nixos-version --revision && home-manager --version";
       # Hydra build status check
       hc          = "hydra-check";
-      # Check NVIDIA legacy_580 availability per channel
-      nv11        = "NIXPKGS_ALLOW_UNFREE=1 nix eval github:NixOS/nixpkgs/nixos-25.11#linuxPackages.nvidiaPackages.legacy_580.version";
-      nvun        = "NIXPKGS_ALLOW_UNFREE=1 nix eval github:NixOS/nixpkgs/nixos-unstable#linuxPackages.nvidiaPackages.legacy_580.version";
-      nv26        = "NIXPKGS_ALLOW_UNFREE=1 nix eval github:NixOS/nixpkgs/nixos-26.05#linuxPackages.nvidiaPackages.legacy_580.version";
       # Launch Caddy server inside Devbox for local websites
       servers     = "cd /home/sircam/_devbox/ && devbox run caddy run --config Caddyfile";
+      # Launch and update Google Chrome on-the-fly straight from the cloud sandbox
+      chrome      = "nix run github:sircam-html/chrome-sandbox --override-input nixpkgs nixpkgs";
+      # PLAN B: Emergency alias to instantly factory-reset the Chrome sandbox space
+      chrome-wipe = "rm -rf ~/.cache/chrome-sandbox && echo '🧹 Chrome sandbox has been completely wiped!'";
     };
   };
 
