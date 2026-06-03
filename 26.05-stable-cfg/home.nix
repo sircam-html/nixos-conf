@@ -17,12 +17,12 @@ let
 in {
 
   # ── User ──────────────────────────────────────────────────────────────────────
-  home.username      = "sircam";
-  home.homeDirectory = "/home/sircam";
-  home.stateVersion  = "25.11";
+  home.username                  = "sircam";
+  home.homeDirectory             = "/home/sircam";
+  home.stateVersion              = "25.11";
   home.enableNixpkgsReleaseCheck = false;
-  news.display               = "silent";
-  nixpkgs.config.allowUnfree = true;
+  news.display                   = "silent";
+  nixpkgs.config.allowUnfree     = true;
 
   # ── Fonts ─────────────────────────────────────────────────────────────────────
   fonts.fontconfig.enable = true;
@@ -57,6 +57,7 @@ in {
     hydra-check
     devbox
     htop
+    tmux
     git
 
     # Multimedia
@@ -82,11 +83,12 @@ in {
   # Managed via Home Manager, preset set via ff alias
   programs.fastfetch.enable = true;
 
+  # ── Fish Shell Configuration ──────────────────────────────────────────────────
   programs.fish = {
     enable = true;
 
-     # NEW: Native Fish function that captures your text and pushes automatically
     functions = {
+      # Native Fish function that captures your text and pushes automatically
       lazy-push = ''
         git add .
         git commit -m "$argv"
@@ -131,6 +133,12 @@ in {
       chrome      = "nix run github:sircam-html/chrome-sandbox --override-input nixpkgs nixpkgs";
       # PLAN B: Emergency alias to instantly factory-reset the Chrome sandbox space
       chrome-wipe = "rm -rf ~/.cache/chrome-sandbox && echo '🧹 Chrome sandbox has been completely wiped!'";
+      # Launch your private AI workspace silently in a detached background tmux session via flat Fish chains
+      ai          = "tmux has-session -t odysseus 2>/dev/null; and echo '🤖 Already running! Logs: tmux a -t odysseus'; or tmux new-session -d -s odysseus 'nix run github:sircam-html/odysseus-sandbox --override-input nixpkgs nixpkgs'; or echo '❌ Failed to start session.'; and echo '🚀 Server spawned! Refresh Zen at http://127.0.0.1:7000'";
+      # Force kill the background AI workspace and immediately free up RAM memory
+      ai-kill     = "tmux kill-session -t odysseus && echo '🧹 Odysseus background AI server has been completely stopped!'";
+      # Force launch the AI workspace directly in your active terminal tab (Foreground logging)
+      ai-launch   = "nix run github:sircam-html/odysseus-sandbox --override-input nixpkgs nixpkgs";
     };
   };
 
