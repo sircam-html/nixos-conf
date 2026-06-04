@@ -60,6 +60,7 @@
       trim        = "nix-collect-garbage -d && sudo nix-collect-garbage -d && sudo nix-env --delete-generations old && sudo nixos-rebuild boot && home-manager expire-generations '2 weeks ago' && nix store optimise";
       hm          = "home-manager switch";
       nr          = "sudo nixos-rebuild switch";
+      nn          = "kate /etc/nixos/nvidia.nix";
       fn          = "kate ~/.config/home-manager/fish.nix";
       cn          = "kate /etc/nixos/configuration.nix";
       hn          = "kate ~/.config/home-manager/home.nix";
