@@ -64,4 +64,3 @@ bu   # copies home.nix + configuration.nix to GitHub automatically
 | `dg`       | Delete old generations and update bootloader     |
 | `op`       | Nix store optimise                               |
 | `ps`       | Restart KDE Plasma shell                         |
-```
