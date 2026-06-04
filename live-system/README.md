@@ -27,7 +27,8 @@ One-liner to pull the latest configs from GitHub — no git clone or SSH keys ne
 sudo nixos-generate-config
 curl -o ~/.config/home-manager/home.nix https://raw.githubusercontent.com/sircam-html/nixos-conf/main/live-system/home.nix
 sudo curl -o /etc/nixos/configuration.nix https://raw.githubusercontent.com/sircam-html/nixos-conf/main/live-system/configuration.nix
-sudo nixos-rebuild switch && hm
+
+> 💡 **VM users:** Run `sudo nixos-generate-config` first to detect the VM's hardware.
 ```
 
 Then run `bu` anytime to push your changes back up.
