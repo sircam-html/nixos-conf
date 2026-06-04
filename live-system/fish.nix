@@ -33,6 +33,9 @@
         if not cp ~/.config/home-manager/fish.nix "$REPO/$DEST/"
           echo "❌ fish.nix copy failed"; return 1
         end
+        if not cp /etc/nixos/nvidia.nix "$REPO/$DEST/"
+          echo "❌ nvidia.nix copy failed"; return 1
+        end
         if not cp /etc/nixos/configuration.nix "$REPO/$DEST/"
           echo "❌ configuration.nix copy failed"; return 1
         end
@@ -51,13 +54,13 @@
 
     shellAliases = {
       bu          = "backup";
-      fn          = "kate ~/.config/home-manager/fish.nix";
       safe-check  = "nix run github:sircam-html/safe-update-nix -- --check";
       safe-update = "nix run github:sircam-html/safe-update-nix";
       update      = "sudo nix-channel --update && sudo nixos-rebuild switch --upgrade && home-manager switch";
       trim        = "nix-collect-garbage -d && sudo nix-collect-garbage -d && sudo nix-env --delete-generations old && sudo nixos-rebuild boot && home-manager expire-generations '2 weeks ago' && nix store optimise";
       hm          = "home-manager switch";
       nr          = "sudo nixos-rebuild switch";
+      fn          = "kate ~/.config/home-manager/fish.nix";
       cn          = "kate /etc/nixos/configuration.nix";
       hn          = "kate ~/.config/home-manager/home.nix";
       gc          = "nix-collect-garbage -d && sudo nix-collect-garbage -d";
