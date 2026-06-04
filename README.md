@@ -7,4 +7,4 @@ Personal NixOS setup for reproducibility — **Stable 26.05** with KDE Plasma 6 
 | `live-system/` | Auto-backup of current running config |
 | `devbox/` | Devbox project files |
 | `guides/` | NixOS guides and notes |
-| `images/` | Screenshots and images |
+| `images/` | Wallpapers and icons |
