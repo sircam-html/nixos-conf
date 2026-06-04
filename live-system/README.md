@@ -27,7 +27,7 @@ mkdir -p ~/.config/home-manager
 curl -o ~/.config/home-manager/home.nix https://raw.githubusercontent.com/sircam-html/nixos-conf/main/live-system/home.nix
 sudo curl -o /etc/nixos/configuration.nix https://raw.githubusercontent.com/sircam-html/nixos-conf/main/live-system/configuration.nix
 
-Run sudo nixos-rebuild switch && home-manager switch (separately or  one after the other).
+Run sudo nixos-rebuild switch && home-manager switch (separately or one after the other).
 
 
 ## 🔄 Backup
