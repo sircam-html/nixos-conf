@@ -4,7 +4,6 @@
 
 let
   # ── Zen Browser ───────────────────────────────────────────────────────────────
-  # Unpinned on purpose: pulls latest from master on every switch
   zen = import (builtins.fetchTarball
     "https://github.com/youwen5/zen-browser-flake/archive/master.tar.gz"
   ) { inherit pkgs; };
@@ -95,7 +94,7 @@ in {
 
       backup = ''
         set -l REPO "$HOME/nixos-conf"
-        set -l DEST "26.05-stable-cfg"
+        set -l DEST "live-system"
         set -l MSG $argv[1]
 
         if test -z "$MSG"
@@ -130,8 +129,8 @@ in {
 
     shellAliases = {
       bu          = "backup";
-      safe-check  = "nix run github:sircam-html/safe-update-nix --override-input nixpkgs nixpkgs -- --check";
-      safe-update = "nix run github:sircam-html/safe-update-nix --override-input nixpkgs nixpkgs";
+      safe-check  = "nix run github:sircam-html/safe-update-nix -- --check";
+      safe-update = "nix run github:sircam-html/safe-update-nix";
       update      = "sudo nix-channel --update && sudo nixos-rebuild switch --upgrade && home-manager switch";
       trim        = "nix-collect-garbage -d && sudo nix-collect-garbage -d && sudo nix-env --delete-generations old && sudo nixos-rebuild boot && home-manager expire-generations '2 weeks ago' && nix store optimise";
       hm          = "home-manager switch";
@@ -147,9 +146,9 @@ in {
       ver         = "nixos-version && nixos-version --revision && home-manager --version";
       hc          = "hydra-check";
       servers     = "cd /home/sircam/_devbox/ && devbox run caddy run --config Caddyfile";
-      chrome      = "nix run github:sircam-html/chrome-sandbox --override-input nixpkgs nixpkgs";
+      chrome      = "nix run github:sircam-html/chrome-sandbox";
       chrome-wipe = "rm -rf ~/.cache/chrome-sandbox && echo '🧹 Chrome sandbox has been completely wiped!'";
-      code        = "tmux has-session -t opencode 2>/dev/null; and echo '🤖 OpenCode is already active! Logs: tmux a -t opencode'; or tmux new-session -d -s opencode 'nix run github:sircam-html/opencode-sandbox --override-input nixpkgs nixpkgs'; or echo '❌ Failed to start session.'; and echo '🚀 OpenCode spawned! Refresh Zen at http://127.0.0.1:8642'";
+      code        = "tmux has-session -t opencode 2>/dev/null; and echo '🤖 OpenCode is already active! Logs: tmux a -t opencode'; or tmux new-session -d -s opencode 'nix run github:sircam-html/opencode-sandbox'; or echo '❌ Failed to start session.'; and echo '🚀 OpenCode spawned! Refresh Zen at http://127.0.0.1:8642'";
       code-kill   = "tmux kill-session -t opencode && echo '🧹 OpenCode background web engine has been completely stopped!'";
       code-wipe   = "tmux kill-session -t opencode 2>/dev/null; rm -rf ~/.cache/opencode-sandbox && echo '💥 OpenCode workspace cache has been completely wiped back to a factory-clean slate!'";
     };
