@@ -94,9 +94,37 @@ in {
         git commit -m "$argv"
         git push origin main
       '';
+
+      # Backup/sync NixOS configs to GitHub
+      backup = ''
+        set -l REPO "$HOME/nixos-conf"
+        set -l DEST "26.05-stable-cfg"
+
+        if test ! -d "$REPO"
+          git clone git@github.com:sircam-html/nixos-conf.git "$REPO"
+        end
+
+        cp ~/.config/home-manager/home.nix "$REPO/$DEST/"
+        cp /etc/nixos/configuration.nix "$REPO/$DEST/"
+
+        cd "$REPO"
+        if git diff --quiet && git diff --cached --quiet
+          echo "✓ No changes — already up to date"
+          return 0
+        end
+
+        git add -A
+        git commit -m "sync: $(date '+%Y-%m-%d %H:%M')"
+        git push origin main
+        echo "✓ Configs backed up to GitHub"
+      '';
     };
 
     shellAliases = {
+      # Backup all configs to GitHub
+      bu          = "backup";
+      # Dry-run Hydra check (audit only, no update)
+      safe-check  = "nix run github:sircam-html/safe-update-nix --override-input nixpkgs nixpkgs -- --check";
       # Hyper-localized execution (Bypasses downloads, instantly evaluates via system cache)
       safe-update = "nix run github:sircam-html/safe-update-nix --override-input nixpkgs nixpkgs";
       # Update system and home-manager
@@ -133,12 +161,13 @@ in {
       chrome      = "nix run github:sircam-html/chrome-sandbox --override-input nixpkgs nixpkgs";
       # PLAN B: Emergency alias to instantly factory-reset the Chrome sandbox space
       chrome-wipe = "rm -rf ~/.cache/chrome-sandbox && echo '🧹 Chrome sandbox has been completely wiped!'";
-      # Launch your private AI workspace silently in a detached background tmux session via flat Fish chains
-      ai          = "tmux has-session -t odysseus 2>/dev/null; and echo '🤖 Already running! Logs: tmux a -t odysseus'; or tmux new-session -d -s odysseus 'nix run github:sircam-html/odysseus-sandbox --override-input nixpkgs nixpkgs'; or echo '❌ Failed to start session.'; and echo '🚀 Server spawned! Refresh Zen at http://127.0.0.1:7000'";
-      # Force kill the background AI workspace and immediately free up RAM memory
-      ai-kill     = "tmux kill-session -t odysseus && echo '🧹 Odysseus background AI server has been completely stopped!'";
-      # Force launch the AI workspace directly in your active terminal tab (Foreground logging)
-      ai-launch   = "nix run github:sircam-html/odysseus-sandbox --override-input nixpkgs nixpkgs";
+
+      # Launch private OpenCode interface silently inside a detached background session via flat Fish chains
+      code        = "tmux has-session -t opencode 2>/dev/null; and echo '🤖 OpenCode is already active! Logs: tmux a -t opencode'; or tmux new-session -d -s opencode 'nix run github:sircam-html/opencode-sandbox --override-input nixpkgs nixpkgs'; or echo '❌ Failed to start session.'; and echo '🚀 OpenCode spawned! Refresh Zen at http://127.0.0.1:8642'";
+      # Force kill the background OpenCode web server engine and immediately free up system RAM memory
+      code-kill   = "tmux kill-session -t opencode && echo '🧹 OpenCode background web engine has been completely stopped!'";
+      # Factory reset to instantly wipe your OpenCode database, code histories, and caches
+      code-wipe   = "tmux kill-session -t opencode 2>/dev/null; rm -rf ~/.cache/opencode-sandbox && echo '💥 OpenCode workspace cache has been completely wiped back to a factory-clean slate!'";
     };
   };
 
