@@ -21,19 +21,18 @@ Personal NixOS setup running **Stable 26.05** with KDE Plasma 6 on a hybrid AMD/
 
 ## 🚀 Quick Setup (Fresh Machine)
 
-One-liner to pull the latest configs from GitHub — no git clone or SSH keys needed:
-
 ```bash
 sudo nixos-generate-config
+mkdir -p ~/.config/home-manager
 curl -o ~/.config/home-manager/home.nix https://raw.githubusercontent.com/sircam-html/nixos-conf/main/live-system/home.nix
 sudo curl -o /etc/nixos/configuration.nix https://raw.githubusercontent.com/sircam-html/nixos-conf/main/live-system/configuration.nix
 
-> 💡 **VM users:** Run `sudo nixos-generate-config` first to detect the VM's hardware.
-```
+Run sudo nixos-rebuild switch && home-manager switch (or separately, one after the other).
 
-Then run `bu` anytime to push your changes back up.
 
 ## 🔄 Backup
+
+Use `bu` anytime to push your changes back up.
 
 ```bash
 bu   # copies home.nix + configuration.nix to GitHub automatically
