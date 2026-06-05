@@ -6,7 +6,7 @@ NVIDIA's **580 branch** is the final Long-Term Support (LTS) branch for **Pascal
 These configurations uses the `mkDriver` function to "freeze" the driver version, ensuring your GPU continues to work regardless of system-wide updates.
 
 ## 🛠️ Current Working Configuration
-Choose one of the below driver version to add to your `configuration.nix`:
+Choose one of the driver versions below to add to your `configuration.nix`:
 
 ```nixos
   # ── NVIDIA Driver (Pinned 580.142) ─--───────────────────────────────────────────
