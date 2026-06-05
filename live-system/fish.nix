@@ -63,6 +63,7 @@
       trim        = "nix-collect-garbage -d && sudo nix-collect-garbage -d && sudo nix-env --delete-generations old && sudo nixos-rebuild boot && home-manager expire-generations '2 weeks ago' && nix store optimise";
       hm          = "home-manager switch";
       nr          = "sudo nixos-rebuild switch";
+      an          = "kate /etc/nixos/amd-cpu.nix";
       nn          = "kate /etc/nixos/nvidia.nix";
       nv          = "nix run ~/nixos-conf/tracker --override-input nixpkgs-unstable github:NixOS/nixpkgs/nixpkgs-unstable --override-input nixpkgs-stable github:NixOS/nixpkgs/nixos-26.05; and echo '───'; and nix build --no-link --print-out-paths ~/nixos-conf/tracker#mkDriver | xargs cat";
       fn          = "kate ~/.config/home-manager/fish.nix";
