@@ -1,4 +1,4 @@
-# NixOS 26.05 Stable | /home/sircam/.config/home-manager/
+# NixOS Stable 26.05-pre | /home/sircam/.config/home-manager/
 
 { config, pkgs, ... }:
 

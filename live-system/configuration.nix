@@ -1,4 +1,4 @@
-# NixOS 26.05 Stable + KDE Plasma 6
+# NixOS Stable 26.05 (Yarara) | x86_64
 
 { config, pkgs, ... }:
 
