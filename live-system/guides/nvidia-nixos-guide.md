@@ -9,6 +9,7 @@ This configuration uses the `mkDriver` function to "freeze" the driver version, 
 Add this to your `configuration.nix`:
 
 ```nixos
+  # ── NVIDIA Driver (Pinned 580.142) ─--───────────────────────────────────────────
   hardware.nvidia = {
     modesetting.enable = true;
     nvidiaSettings     = true;
@@ -20,6 +21,21 @@ Add this to your `configuration.nix`:
       openSha256         = "sha256-0000000000000000000000000000000000000000000=";
       settingsSha256     = "sha256-BnrIlj5AvXTfqg/qcBt2OS9bTDDZd3uhf5jqOtTMTQM=";
       persistencedSha256 = "sha256-0000000000000000000000000000000000000000000=";
+    };
+  };
+
+  # ── NVIDIA Driver (Pinned 580.159.04) ────────────────────────────────────────────
+  hardware.nvidia = {
+    modesetting.enable = true;
+    nvidiaSettings     = true;
+    open               = false;
+    package            = config.boot.kernelPackages.nvidiaPackages.mkDriver {
+      version            = "580.159.04";
+      sha256_64bit       = "sha256-weZnYbCI0Xs632y2l53przi+JoTRArABoXbc+vq9yh4=";
+      sha256_aarch64     = "sha256-iRLyYjvHyDl2Xzb87j20o1MYNKLK/zql1JwSWbI3Kus=";
+      openSha256         = "sha256-zsNmjZW0cyZWPp3vDT3mNeqAo0hS0M7e9Tbvwvij+F4=";
+      settingsSha256     = "sha256-U0hics4gQeZWsD+ch9PBz42zfTOEVcKRVIqYZb3VOY8=";
+      persistencedSha256 = "sha256-vDawiy52GB8JABUKZDiQUc8uda8p/7jCFW7rTu6QMa4=";
     };
   };
 ```
