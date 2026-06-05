@@ -18,6 +18,7 @@ Personal NixOS setup running **Stable 26.05** with KDE Plasma 6 on a hybrid AMD/
 - **`configuration.nix`** — System base: bootloader, kernel, networking, services
 - **`nvidia.nix`** — NVIDIA driver module (pinned 580.159.04 via mkDriver)
 - **`amd-cpu.nix`** — AMD CPU module: pstate, TLP, power management
+- **`fish.nix`** — Fish shell aliases and custom functions
 - **`home.nix`** — User level: all apps managed via Home Manager (100% pure)
 
 ## 🚀 Quick Setup (Fresh Machine)
