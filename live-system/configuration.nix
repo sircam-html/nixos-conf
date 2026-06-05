@@ -6,6 +6,7 @@
   imports = [
     ./hardware-configuration.nix
     ./nvidia.nix
+    ./amd-cpu.nix
   ];
 
   # ── Bootloader ────────────────────────────────────────────────────────────────
@@ -82,6 +83,15 @@
     user   = "sircam";
   };
 
+    # ── Sudo (no password prompt) ─────────────────────────────────────────────────
+  security.sudo.extraRules = [{
+    users = [ "sircam" ];
+    commands = [{
+      command = "ALL";
+      options = [ "SETENV" "NOPASSWD" ];
+    }];
+  }];
+
   # ── CoolerControl ─────────────────────────────────────────────────────────────
   programs.coolercontrol.enable = true;
 
@@ -93,31 +103,6 @@
     libvirt
   ];
 
-  # ── AMD CPU Microcode ─────────────────────────────────────────────────────────
-  hardware.cpu.amd.updateMicrocode = true;
-
-  # ── TLP Power Management ──────────────────────────────────────────────────────
-  services.tlp.enable = true;
-  services.tlp.settings = {
-    CPU_SCALING_GOVERNOR_ON_AC   = "schedutil";
-    CPU_BOOST_ON_AC              = 0;
-    CPU_ENERGY_PERF_POLICY_ON_AC = "balance_power";
-  };
-
-  # ── Disable power-profiles-daemon ─────────────────────────────────────────────
-  services.power-profiles-daemon.enable = false;
-
-  # ── Power Management ──────────────────────────────────────────────────────────
-  powerManagement.enable          = true;
-  powerManagement.cpuFreqGovernor = null;
-
-  # ── Disable Sleep / Hibernation ───────────────────────────────────────────────
-  systemd.sleep.settings.Sleep = {
-    AllowSuspend              = "no";
-    AllowHibernation          = "no";
-    AllowHybridSleep          = "no";
-    AllowSuspendThenHibernate = "no";
-  };
 
   # ── Virtualization ────────────────────────────────────────────────────────────
   virtualisation.libvirtd.enable = true;
@@ -136,15 +121,6 @@
   nix.gc.options                     = "--delete-older-than 10d";
   nix.settings.auto-optimise-store   = true;
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
-
-  # ── Sudo (no password prompt) ─────────────────────────────────────────────────
-  security.sudo.extraRules = [{
-    users = [ "sircam" ];
-    commands = [{
-      command = "ALL";
-      options = [ "SETENV" "NOPASSWD" ];
-    }];
-  }];
 
   # ── Clean /tmp on Boot ────────────────────────────────────────────────────────
   boot.tmp.cleanOnBoot = true;
