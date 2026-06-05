@@ -9,7 +9,7 @@ These configurations uses the `mkDriver` function to "freeze" the driver version
 Choose one of the driver versions below to add to your `configuration.nix`:
 
 ```nixos
-  # ── NVIDIA Driver (Pinned 580.142) ─────────────────────────────────────────────
+  # ── NVIDIA Driver (Pinned 580.142) ──────────────────────────────────────────────
   hardware.nvidia = {
     modesetting.enable = true;
     nvidiaSettings     = true;
