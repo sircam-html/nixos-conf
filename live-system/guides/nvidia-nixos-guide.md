@@ -43,7 +43,7 @@ Choose one of the driver versions below to add to your `configuration.nix`:
 ```
 
 ## 📝 Note on the Hashes
-You will notice that only **`sha256_64bit`** and **`settingsSha256`** contain real values, while the others are zeros. This is expected:
+You will notice that 580.142 only **`sha256_64bit`** and **`settingsSha256`** contain real values, while the others are zeros. This is expected:
 * **`sha256_64bit`**: The core driver for standard PCs. Nix downloads this first.
 * **`settingsSha256`**: The GUI settings tool.
 * **The Zeros**: Nix only checks hashes for files it actually downloads. Since you are likely on an x86_64 PC and have `open = false`, Nix ignores the ARM (`aarch64`) and `open` source files entirely.
