@@ -24,6 +24,8 @@ Add this to your `configuration.nix`:
     };
   };
 
+##
+
   # ── NVIDIA Driver (Pinned 580.159.04) ────────────────────────────────────────────
   hardware.nvidia = {
     modesetting.enable = true;
