@@ -15,9 +15,3 @@ http://localhost:8081 {
     try_files {path} {path}.html {path}/
     file_server
 }
-
-http://localhost:8082 {
-    root * ./public/teamwork
-    try_files {path} {path}.html {path}/
-    file_server
-}
