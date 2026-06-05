@@ -61,7 +61,7 @@
       hm          = "home-manager switch";
       nr          = "sudo nixos-rebuild switch";
       nn          = "kate /etc/nixos/nvidia.nix";
-      nv          = "nix run github:sircam-html/nvidia-580-tracker --override-input nixpkgs-unstable github:NixOS/nixpkgs/nixpkgs-unstable --override-input nixpkgs-stable github:NixOS/nixpkgs/nixos-26.05; and echo '───'; and nix build --no-link --print-out-paths github:sircam-html/nvidia-580-tracker#mkDriver | xargs cat";
+      nv          = "nix run ~/nixos-conf/tracker --override-input nixpkgs-unstable github:NixOS/nixpkgs/nixpkgs-unstable --override-input nixpkgs-stable github:NixOS/nixpkgs/nixos-26.05; and echo '───'; and nix build --no-link --print-out-paths ~/nixos-conf/tracker#mkDriver | xargs cat";
       fn          = "kate ~/.config/home-manager/fish.nix";
       cn          = "kate /etc/nixos/configuration.nix";
       hn          = "kate ~/.config/home-manager/home.nix";
