@@ -24,7 +24,7 @@
   boot.initrd.verbose        = false;
 
   # ── Kernel Params ─────────────────────────────────────────────────────────────
-  boot.kernelParams = [ "amd_pstate=passive" "quiet" "splash" "udev.log_level=3" ];
+  boot.kernelParams = [ "quiet" "splash" "udev.log_level=3" ];
 
   # ── Networking ────────────────────────────────────────────────────────────────
   networking.hostName              = "nixos";

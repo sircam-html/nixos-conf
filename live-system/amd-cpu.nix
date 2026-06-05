@@ -3,6 +3,7 @@
 
 {
   # ── AMD CPU Microcode ─────────────────────────────────────────────────────────
+  boot.kernelParams = [ "amd_pstate=passive" ];
   hardware.cpu.amd.updateMicrocode = true;
 
   # ── TLP Power Management ──────────────────────────────────────────────────────
