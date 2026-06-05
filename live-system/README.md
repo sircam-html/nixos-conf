@@ -1,5 +1,5 @@
 ```markdown
-# NixOS Configuration / Pinned Nvidia Drivers 580.142
+# NixOS Configuration / Pinned Nvidia Drivers 580.159.04
 
 Personal NixOS setup running **Stable 26.05** with KDE Plasma 6 on a hybrid AMD/NVIDIA system.
 
@@ -10,7 +10,7 @@ Personal NixOS setup running **Stable 26.05** with KDE Plasma 6 on a hybrid AMD/
 | OS         | NixOS 26.05 (Yarara) x86_64                   |
 | Desktop    | KDE Plasma 6.6 (Wayland)                      |
 | CPU        | AMD (pstate + schedutil)                      |
-| GPU        | NVIDIA GTX 1070 Ti (driver pinned to 580.142) |
+| GPU        | NVIDIA GTX 1070 Ti (driver pinned 580.159.04) |
 | Bootloader | systemd-boot + Plymouth (nixos-bgrt theme)    |
 | Shell      | Fish (with aliases)                           |
 
@@ -42,7 +42,7 @@ bu   # copies home.nix + configuration.nix to GitHub automatically
 
 ## Highlights
 
-- NVIDIA driver pinned to `580.142` for Pascal GPU stability
+- NVIDIA driver pinned to `580.159.04` for Pascal GPU stability
 - Plymouth animated boot splash with NixOS logo
 - US keyboard layout with AltGr international variant for Spanish accents and ñ
 - Steam with Proton for gaming
