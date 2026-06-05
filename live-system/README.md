@@ -35,14 +35,6 @@ sudo curl -o /etc/nixos/nvidia.nix https://raw.githubusercontent.com/sircam-html
 Run sudo nixos-rebuild switch && home-manager switch (separately or one after the other).
 
 
-## 🔄 Backup
-
-Use `bu` anytime to push your changes back up.
-
-```bash
-bu   # copies all config files to GitHub automatically
-```
-
 ## Highlights
 
 - NVIDIA driver pinned to `580.159.04` for Pascal GPU stability
