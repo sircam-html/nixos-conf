@@ -34,7 +34,6 @@ sudo curl -o /etc/nixos/nvidia.nix https://raw.githubusercontent.com/sircam-html
 
 Run sudo nixos-rebuild switch && home-manager switch (separately or one after the other).
 
-
 ## Highlights
 
 - NVIDIA driver pinned to `580.159.04` for Pascal GPU stability
