@@ -57,16 +57,29 @@ bu   # copies all config files to GitHub automatically
 | Alias      | Description                                      |
 |------------|--------------------------------------------------|
 | `bu`       | Backup configs to GitHub                         |
-| `update`   | Updates system and Home Manager                  |
-| `trim`     | Full system cleanup and store optimization       |
-| `hm`       | Home Manager switch                              |
+| `update`   | NixOS + Home Manager full update                 |
 | `nr`       | NixOS rebuild switch                             |
-| `cn`       | Edit system configuration                        |
-| `nn`       | Edit NVIDIA driver module                        |
-| `an`       | Edit AMD CPU module                              |
-| `hn`       | Edit home configuration                          |
-| `ff`       | Fastfetch with custom preset                     |
+| `hm`       | Home Manager switch                              |
+| `nv`       | Live NVIDIA 580 driver tracker + mkDriver block  |
+| `safe-check` | Hydra pre-update check                         |
+| `safe-update`| Update only if Hydra checks pass               |
+| `trim`     | Full system cleanup + store optimization         |
 | `gc`       | Nix garbage collect                              |
-| `dg`       | Delete old generations and update bootloader     |
+| `dg`       | Delete old generations + update bootloader       |
 | `op`       | Nix store optimise                               |
+| `cn`       | Edit configuration.nix                           |
+| `nn`       | Edit nvidia.nix                                  |
+| `an`       | Edit amd-cpu.nix                                 |
+| `fn`       | Edit fish.nix (aliases)                          |
+| `hn`       | Edit home.nix                                    |
+| `ff`       | Fastfetch with custom preset                     |
+| `ch`       | List system + user channels                      |
+| `ver`      | Show NixOS + Home Manager versions               |
 | `ps`       | Restart KDE Plasma shell                         |
+| `chrome`   | Run Chrome sandbox (ephemeral)                   |
+| `chrome-wipe` | Wipe Chrome sandbox cache                    |
+| `code`     | Start OpenCode sandbox (tmux)                    |
+| `code-kill`| Stop OpenCode sandbox                            |
+| `code-wipe`| Wipe OpenCode sandbox cache                      |
+| `servers`  | Start devbox Caddy servers                       |
+| `hc`       | hydra-check                                      |
