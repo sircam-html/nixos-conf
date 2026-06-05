@@ -5,7 +5,4 @@ Modular NixOS setup with auto backup for pure reproducibility — **Stable 26.05
 | Folder | Content |
 |--------|---------|
 | `live-system/` | Auto-backup of current running config |
-| `live-system/devbox/` | Devbox project files |
-| `live-system/guides/` | NixOS guides and notes |
-| `live-system/images/` | Wallpapers and icons |
 | `tracker/` | Local NVIDIA 580 driver version tracker (live data) |
