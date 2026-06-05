@@ -3,7 +3,7 @@
 ## 📌 Context
 NVIDIA's **580 branch** is the final Long-Term Support (LTS) branch for **Pascal-architecture GPUs** (10-series). Standard NixOS updates (e.g., moving to version 26.05 or 27.05) will eventually point the "stable" driver package to version 590+, which officially drops support for these cards.
 
-This configuration uses the `mkDriver` function to "freeze" the driver version, ensuring your GPU continues to work regardless of system-wide updates.
+These configurations uses the `mkDriver` function to "freeze" the driver version, ensuring your GPU continues to work regardless of system-wide updates.
 
 ## 🛠️ Current Working Configuration
 Add this to your `configuration.nix`:
