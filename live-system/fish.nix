@@ -65,7 +65,7 @@
       nr          = "sudo nixos-rebuild switch";
       an          = "kate /etc/nixos/amd-cpu.nix";
       nn          = "kate /etc/nixos/nvidia.nix";
-      nv          = "nix run ~/nixos-conf/tracker --override-input nixpkgs-unstable github:NixOS/nixpkgs/nixpkgs-unstable --override-input nixpkgs-stable github:NixOS/nixpkgs/nixos-26.05; and echo '───'; and nix build --no-link --print-out-paths ~/nixos-conf/tracker#mkDriver | xargs cat";
+      nv          = "nix run ~/nixos-conf/tracker --override-input nixpkgs-unstable github:NixOS/nixpkgs/nixpkgs-unstable --override-input nixpkgs-stable github:NixOS/nixpkgs/nixos-26.05 2>/dev/null; and echo '───'; and nix build --no-link --print-out-paths ~/nixos-conf/tracker#mkDriver 2>/dev/null | xargs cat";
       fn          = "kate ~/.config/home-manager/fish.nix";
       cn          = "kate /etc/nixos/configuration.nix";
       hn          = "kate ~/.config/home-manager/home.nix";
