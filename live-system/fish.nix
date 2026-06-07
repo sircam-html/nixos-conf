@@ -83,6 +83,8 @@
       code        = "tmux has-session -t opencode 2>/dev/null; and echo '🤖 OpenCode is already active! Logs: tmux a -t opencode'; or tmux new-session -d -s opencode 'nix run github:sircam-html/opencode-sandbox'; or echo '❌ Failed to start session.'; and echo '🚀 OpenCode spawned! Refresh Zen at http://127.0.0.1:8642'";
       code-kill   = "tmux kill-session -t opencode && echo '🧹 OpenCode background web engine has been completely stopped!'";
       code-wipe   = "tmux kill-session -t opencode 2>/dev/null; rm -rf ~/.cache/opencode-sandbox && echo '💥 OpenCode workspace cache has been completely wiped back to a factory-clean slate!'";
+      dm          = "nix run github:sircam-html/dreadmyst-sandbox";
+      dm-wipe     = "rm -rf ~/.cache/dreadmyst-sandbox && echo '🎮 Dreadmyst sandbox wiped!'";
     };
   };
 }
