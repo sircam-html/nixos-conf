@@ -78,7 +78,7 @@
       ver         = "nixos-version && nixos-version --revision && home-manager --version";
       hc          = "hydra-check";
       servers     = "cd /home/sircam/_devbox/ && devbox run caddy run --config Caddyfile";
-      chrome      = "nix run github:sircam-html/chrome-sandbox";
+      chrome      = "nix run github:sircam-html/chrome-sandbox --override-input nixpkgs nixpkgs";
       chrome-wipe = "rm -rf ~/.cache/chrome-sandbox && echo '🧹 Chrome sandbox has been completely wiped!'";
       code        = "tmux has-session -t opencode 2>/dev/null; and echo '🤖 OpenCode is already active! Logs: tmux a -t opencode'; or tmux new-session -d -s opencode 'nix run github:sircam-html/opencode-sandbox'; or echo '❌ Failed to start session.'; and echo '🚀 OpenCode spawned! Refresh Zen at http://127.0.0.1:8642'";
       code-kill   = "tmux kill-session -t opencode && echo '🧹 OpenCode background web engine has been completely stopped!'";
