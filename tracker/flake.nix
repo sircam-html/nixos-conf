@@ -21,27 +21,27 @@
         apps.default = {
           type = "app";
           program = "${pkgs-unstable.writeShellScriptBin "nvidia-580-info" ''
-            echo "╔══════════════════════════════════════════╗"
-            echo "║        NVIDIA 580 Driver Tracker         ║"
-            echo "╠══════════════════════════════════════════╣"
-            printf "║ Unstable:    %-23s║\n" "${lu.version}"
-            printf "║ Stable:      %-23s║\n" "${ls.version}"
-            printf "║ Kernel (nix): %-22s║\n" "${pkgs-unstable.linuxPackages.kernel.version}"
-            printf "║ Kernel (run): %-22s║\n" "$(uname -r)"
-            echo "╠══════════════════════════════════════════╣"
-            echo "║ nix build #mkDriver && cat result         ║"
-            echo "╚══════════════════════════════════════════╝"
+            RULER=$(printf '%64s' | tr ' ' '═')
+            echo "$RULER"
+            echo "  Last mkDriver version available — update your hashes now!"
+            echo "$RULER"
+            echo "  package = config.boot.kernelPackages.nvidiaPackages.mkDriver {"
+            echo "    version = \"${lu.version}\";"
+            echo "  };"
+            echo ""
+            echo "$RULER"
+            printf "  Unstable: %-20s  Stable: %s\n" "${lu.version}" "${ls.version}"
+            printf "  Kernel:   %-20s  Running: %s\n" "${pkgs-unstable.linuxPackages.kernel.version}" "$(uname -r)"
+            echo "$RULER"
+            echo "  Copy the block above, paste into nvidia.nix,"
+            echo "  then fetch fresh hashes from nixpkgs master."
+            echo "$RULER"
           ''}/bin/nvidia-580-info";
         };
 
         packages.mkDriver = pkgs-unstable.writeText "mkDriver-config" ''
           package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
-            version            = "${lu.version}";
-            sha256_64bit       = "sha256-weZnYbCI0Xs632y2l53przi+JoTRArABoXbc+vq9yh4=";
-            sha256_aarch64     = "sha256-iRLyYjvHyDl2Xzb87j20o1MYNKLK/zql1JwSWbI3Kus=";
-            openSha256         = "sha256-zsNmjZW0cyZWPp3vDT3mNeqAo0hS0M7e9Tbvwvij+F4=";
-            settingsSha256     = "sha256-U0hics4gQeZWsD+ch9PBz42zfTOEVcKRVIqYZb3VOY8=";
-            persistencedSha256 = "sha256-vDawiy52GB8JABUKZDiQUc8uda8p/7jCFW7rTu6QMa4=";
+            version = "${lu.version}";
           };
         '';
       }
