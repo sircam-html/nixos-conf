@@ -21,7 +21,7 @@
         apps.default = {
           type = "app";
           program = "${pkgs-unstable.writeShellScriptBin "nvidia-580-info" ''
-            RULER=$(printf '%64s' | tr ' ' '═')
+            RULER=$(printf '%64s' | tr ' ' '=')
             echo "$RULER"
             echo "  Last mkDriver version available — update your hashes now!"
             echo "$RULER"
