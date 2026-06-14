@@ -117,13 +117,13 @@
 
   # ── Nix Store Cleanup / Optimization ─────────────────────────────────────────
   nix.gc.automatic                   = true;
-  nix.gc.dates                       = "daily";
+  nix.gc.dates                       = "weekly";
   nix.gc.options                     = "--delete-older-than 10d";
-  nix.settings.auto-optimise-store   = true;
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   # ── Clean /tmp on Boot ────────────────────────────────────────────────────────
   boot.tmp.cleanOnBoot = true;
+  boot.tmp.useTmpfs    = true; # Compiles in RAM (32GB available)
 
   # ── State Version ─────────────────────────────────────────────────────────────
   system.stateVersion = "25.05";
