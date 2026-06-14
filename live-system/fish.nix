@@ -76,6 +76,7 @@
       ch          = "sudo nix-channel --list && echo '───' && nix-channel --list";
       ver         = "nixos-version && nixos-version --revision && home-manager --version";
       hc          = "hydra-check";
+      ssd         = "sudo smartctl -a /dev/sda";
       servers     = "cd /home/sircam/_devbox/ && devbox run caddy run --config Caddyfile";
       chrome      = "nix run github:sircam-html/chrome-sandbox --override-input nixpkgs nixpkgs";
       chrome-wipe = "rm -rf ~/.cache/chrome-sandbox && echo '🧹 Chrome sandbox has been completely wiped!'";

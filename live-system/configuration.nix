@@ -95,14 +95,17 @@
   # ── CoolerControl ─────────────────────────────────────────────────────────────
   programs.coolercontrol.enable = true;
 
+  # ── SSD Health Monitoring ────────────────────────────────────────────────
+  services.smartd.enable = true;
+
   # ── Allow Unfree Packages ─────────────────────────────────────────────────────
   nixpkgs.config.allowUnfree = true;
 
   # ── System Packages ───────────────────────────────────────────────────────────
   environment.systemPackages = with pkgs; [
     libvirt
+    smartmontools
   ];
-
 
   # ── Virtualization ────────────────────────────────────────────────────────────
   virtualisation.libvirtd.enable = true;
