@@ -5,6 +5,8 @@
     enable = true;
 
     functions = {
+      fish_greeting = "";
+
       lazy-push = ''
         git add .
         git commit -m "$argv"
