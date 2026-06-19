@@ -27,6 +27,11 @@ in {
   news.display                   = "silent";
   nixpkgs.config.allowUnfree     = true;
 
+  # ── Environment ───────────────────────────────────────────────────────────────
+  home.sessionVariables = {
+    QT_LOGGING_RULES = "qt.multimedia.*=false";
+  };
+
   # ── Fonts ─────────────────────────────────────────────────────────────────────
   fonts.fontconfig.enable = true;
 
