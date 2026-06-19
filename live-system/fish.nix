@@ -44,6 +44,9 @@
         if not cp /etc/nixos/amd-cpu.nix "$REPO/$DEST/"
           echo "❌ amd-cpu.nix copy failed"; return 1
         end
+        if not cp ~/Documents/refresh-memory.md "$REPO/$DEST/"
+          echo "❌ refresh-memory.md copy failed"; return 1
+        end
 
         cd "$REPO"
         if test (count (git status --porcelain)) -ge 1
