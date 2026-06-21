@@ -146,6 +146,7 @@
     wantedBy = [ "timers.target" ];
     timerConfig = {
       OnCalendar = "daily";
+      OnBootSec = "5min";
       Persistent = true;
     };
   };
