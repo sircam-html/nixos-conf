@@ -128,29 +128,6 @@
   boot.tmp.cleanOnBoot = true;
   boot.tmp.useTmpfs    = true;
 
-  # ── Downloads Permission Guard ───────────────────────────────────────────────
-  systemd.services.fix-downloads-perms = {
-    description = "Fix Downloads directory and file permissions";
-    serviceConfig = {
-      Type = "oneshot";
-      ExecStart = "${pkgs.findutils}/bin/find /home/sircam/Downloads -type f -exec chmod 644 {} +";
-      ExecStartPost = [
-        "${pkgs.findutils}/bin/find /home/sircam/Downloads -type d -exec chmod 755 {} +"
-        "${pkgs.coreutils}/bin/chown -R sircam:users /home/sircam/Downloads"
-      ];
-      User = "root";
-    };
-  };
-  systemd.timers.fix-downloads-perms = {
-    description = "Daily Downloads permission fix";
-    wantedBy = [ "timers.target" ];
-    timerConfig = {
-      OnCalendar = "daily";
-      OnBootSec = "5min";
-      Persistent = true;
-    };
-  };
-
   # ── State Version ─────────────────────────────────────────────────────────────
   system.stateVersion = "25.05";
 }
