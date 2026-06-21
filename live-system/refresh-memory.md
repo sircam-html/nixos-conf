@@ -60,8 +60,14 @@ Declarative, modular NixOS 26.05 with pinned NVIDIA 580.159.04 via mkDriver, rep
 - `fx` fixed: no longer self-sabotages (dirs 755, files 644)
 
 ### Jun 19 2026
-- Suppressed Qt multimedia pipewire warnings in `cn`/`hn`/`fn`/etc via `home.sessionVariables.QT_LOGGING_RULES = "qt.multimedia.*=false"` in `home.nix`
+- Suppressed Qt multimedia pipewire warnings via `home.sessionVariables.QT_LOGGING_RULES = "qt.multimedia.*=false"` in `home.nix`
 - Fix is declarative — survives fresh installs, no shell hacks
+
+### Jun 20 2026
+- Added `systemd.timers.fix-downloads-perms` — daily auto-fix for Downloads permissions (chmod 644 files, 755 dirs, chown sircam:users)
+- Suppressed lock file warnings in `chrome` and `code` aliases with `2>/dev/null`
+- `refresh-memory.md` now backed up by `bu` and included in bootstrap curls
+- Guix config: `backup-engine.fish` channels bug fixed (`guix describe --format=channels`)
 
 ## Key Decisions
 - `mkDriver` over `legacy_580` — channel-independent pinning
