@@ -81,6 +81,7 @@
       ch          = "sudo nix-channel --list && echo '───' && nix-channel --list";
       ver         = "nixos-version && nixos-version --revision && home-manager --version";
       hc          = "hydra-check";
+      gt          = "systemctl status fix-downloads-perms.service";
       ssd         = "sudo smartctl -a /dev/sda";
       servers     = "cd /home/sircam/_devbox/ && devbox run caddy run --config Caddyfile";
       chrome      = "nix run github:sircam-html/chrome-sandbox --override-input nixpkgs nixpkgs 2>/dev/null";
