@@ -74,6 +74,9 @@ Declarative, modular NixOS 26.05 with pinned NVIDIA 580.159.04 via mkDriver, rep
 - `gt` alias removed
 - Lock file warnings suppressed in `chrome`/`code` aliases with `2>/dev/null`
 - Fixed root-owned `.raw` file in Downloads via `fx` (chown sircam:users)
+- `opencode-sandbox` flake.lock updated (nixpkgs Jun 8 → Jun 16) — cosmetic, `--override-input` bypasses it
+- `--override-input nixpkgs nixpkgs` confirmed intentional: keeps Chrome/opencode on absolute latest
+- opencode indicator missing in web UI — transient glitch, engine unaffected
 
 ## Key Decisions
 - `mkDriver` over `legacy_580` — channel-independent pinning
