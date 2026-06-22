@@ -27,7 +27,7 @@ Declarative, modular NixOS 26.05 with pinned NVIDIA 580.159.04 via mkDriver, rep
 - `~/.config/home-manager/nvidia.nix` — **deleted**, no import references
 
 ## Key Aliases
-- `bu` → backup 5 configs to GitHub
+- `bu` → backup 6 configs + refresh-memory.md to GitHub
 - `nv` → live NVIDIA tracker with version/update box (stderr suppressed)
 - `nv11` → quick legacy_580 version on nixos-25.11
 - `nvun` → quick legacy_580 version on nixos-unstable
@@ -69,6 +69,12 @@ Declarative, modular NixOS 26.05 with pinned NVIDIA 580.159.04 via mkDriver, rep
 - `refresh-memory.md` now backed up by `bu` and included in bootstrap curls
 - Guix config: `backup-engine.fish` channels bug fixed (`guix describe --format=channels`)
 
+### Jun 21 2026
+- `systemd.timers.fix-downloads-perms` removed (didn't work long-term); back to manual `fx`
+- `gt` alias removed
+- Lock file warnings suppressed in `chrome`/`code` aliases with `2>/dev/null`
+- Fixed root-owned `.raw` file in Downloads via `fx` (chown sircam:users)
+
 ## Key Decisions
 - `mkDriver` over `legacy_580` — channel-independent pinning
 - User/sudo/autologin stays in `configuration.nix` (not worth extracting)
@@ -88,6 +94,7 @@ sudo curl -o /etc/nixos/nvidia.nix https://raw.githubusercontent.com/sircam-html
   && sudo curl -o /etc/nixos/amd-cpu.nix https://raw.githubusercontent.com/sircam-html/nixos-conf/main/live-system/amd-cpu.nix \
   && curl -o ~/.config/home-manager/home.nix https://raw.githubusercontent.com/sircam-html/nixos-conf/main/live-system/home.nix \
   && curl -o ~/.config/home-manager/fish.nix https://raw.githubusercontent.com/sircam-html/nixos-conf/main/live-system/fish.nix \
+  && curl -o ~/Documents/refresh-memory.md https://raw.githubusercontent.com/sircam-html/nixos-conf/main/live-system/refresh-memory.md \
   && sudo nixos-rebuild switch && home-manager switch
 ```
 
