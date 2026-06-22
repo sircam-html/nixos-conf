@@ -77,6 +77,7 @@ Declarative, modular NixOS 26.05 with pinned NVIDIA 580.159.04 via mkDriver, rep
 - `opencode-sandbox` flake.lock updated (nixpkgs Jun 8 → Jun 16) — cosmetic, `--override-input` bypasses it
 - `--override-input nixpkgs nixpkgs` confirmed intentional: keeps Chrome/opencode on absolute latest
 - opencode indicator missing in web UI — transient glitch, engine unaffected
+- `home.backupFileExtension = "bak"` attempted in `home.nix` — option doesn't exist in standalone HM. Use `hm -b backup` if file conflicts appear
 
 ## Key Decisions
 - `mkDriver` over `legacy_580` — channel-independent pinning
