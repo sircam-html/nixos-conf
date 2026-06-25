@@ -69,6 +69,35 @@ Declarative, modular NixOS 26.05 with pinned NVIDIA 580.159.04 via mkDriver, rep
 - `refresh-memory.md` now backed up by `bu` and included in bootstrap curls
 - Guix config: `backup-engine.fish` channels bug fixed (`guix describe --format=channels`)
 
+### Jun 23-24 2026 — OpenBLAS i686 Crisis (Resolved)
+- `nr` after channel bump triggered enormous rebuild: OpenBLAS + numpy + pandas + ffmpeg + Qt3D + QEMU + coolercontrold
+- Build interrupted at 96% (user cancelled, 9:30pm deadline); nix-daemon restarted, blackout
+- `gc && dg && op` chain triggered home-manager rebuild from scratch (cache nuked by `dg`)
+- Cancelled `hm` mid-build to preserve stability
+- **Root cause discovered**: `openblas-i686-linux` hangs forever in `checkPhase` on `zblat3` — Ryzen-specific 32-bit test hang
+- Temporary fix: `nixpkgs.overlays` with `overrideAttrs (old: { doCheck = false; })` for `openblas` + `liquidctl`
+- Overlay later removed from `configuration.nix` (cosmetic, build never completed)
+- Someone else posted exact same bug on Discourse 12h ago: `discourse.nixos.org/t/openblas-i686-linux-hangs-in-checkphase-on-zblat3/78487`
+- Official nixpkgs issue filed: `github.com/NixOS/nixpkgs/issues/534670`
+- **Fix merged**: PR #534770 by Atemu — `doCheck = stdenv.hostPlatform.system != "i686-linux"` on `release-26.05`
+- Fix commit `1cf99b9` merged 2026-06-24 at 12:44 UTC; user's `update` at 11:36 AST missed it by ~1h
+- Decision: wait for channel to rebuild with fix, then re-run `update`
+- Current system: stable on old generation, unaffected
+
+### Jun 25 2026 — Post-Blackout Recovery & Cleanup
+- Re-ran `update` post-blackout; OpenBLAS x86_64 built and all 30 tests passed (no hang)
+- NixOS generation switched successfully; system on latest 26.05
+- `hm` cancelled mid-OpenBLAS build (cache cold for some x86_64 packages)
+- **`update` alias fixed**: `nix-channel --update && sudo nix-channel --update && sudo nixos-rebuild switch && home-manager switch`
+- **`fx` and `nv` converted from aliases to Fish functions** in `fish.nix` (funcsave'd for immediate use)
+- **`nv11`, `nvun`, `nv26`, `hc` aliases removed** from `fish.nix`
+- **`fs` alias removed** (was added unasked; emergency funcsave pattern kept for manual use)
+- **`funcsave` pattern proven**: works as escape hatch when `hm` can't run — alias + funcsave immediately persists aliases without Nix evaluation
+- Cleaned up leftover funcsave files on disk (`fs.fish`, `update.fish`)
+- Colmena evaluated: overkill for single-machine setup; 6-curl bootstrap stays
+- SSD healthy: 860 QVO 1TB, 87% wear, ~95TB written, 3.58yr on, PASSED
+- System stable; pending: `hm` full rebuild when binary cache warms
+
 ### Jun 21 2026
 - `systemd.timers.fix-downloads-perms` removed (didn't work long-term); back to manual `fx`
 - `gt` alias removed
@@ -129,4 +158,5 @@ sudo curl -o /etc/nixos/nvidia.nix https://raw.githubusercontent.com/sircam-html
 - `code-wipe && code-kill` before clean OpenCode tests
 - Session is isolated per login — shared credentials don't share chats
 - `ssd` → full health report; current: Wear 87%, 3.5yr on, ~88TB written, PASSED
+- **REMINDER**: After `hm` runs successfully, delete `~/.config/fish/functions/update.fish` so fish.nix's `update` alias takes effect
 

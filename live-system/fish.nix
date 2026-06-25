@@ -13,6 +13,21 @@
         git push origin main
       '';
 
+      fx = ''
+        sudo chmod 755 ~/Downloads/
+        and sudo chown -R sircam:users ~/Downloads/
+        and sudo find ~/Downloads -type f -exec chmod 644 {} +
+        and sudo find ~/Downloads -type d -exec chmod 755 {} +
+        and echo "✓ Downloads permissions fixed"
+      '';
+
+      nv = ''
+        nix run ~/nixos-conf/tracker \
+          --override-input nixpkgs-unstable github:NixOS/nixpkgs/nixpkgs-unstable \
+          --override-input nixpkgs-stable github:NixOS/nixpkgs/nixos-26.05 \
+          2>/dev/null
+      '';
+
       backup = ''
         set -l REPO "$HOME/nixos-conf"
         set -l DEST "live-system"
@@ -64,7 +79,7 @@
       bu          = "backup";
       safe-check  = "nix run github:sircam-html/safe-update-nix -- --check";
       safe-update = "nix run github:sircam-html/safe-update-nix";
-      update      = "sudo nix-channel --update && sudo nixos-rebuild switch --upgrade && home-manager switch";
+      update      = "nix-channel --update && sudo nix-channel --update && sudo nixos-rebuild switch && home-manager switch";
       trim        = "nix-collect-garbage -d && sudo nix-collect-garbage -d && sudo nix-env --delete-generations old && sudo nixos-rebuild boot && home-manager expire-generations '2 weeks ago' && nix store optimise";
       hm          = "home-manager switch";
       nr          = "sudo nixos-rebuild switch";
@@ -80,8 +95,6 @@
       ff          = "fastfetch -c examples/25";
       ch          = "sudo nix-channel --list && echo '───' && nix-channel --list";
       ver         = "nixos-version && nixos-version --revision && home-manager --version";
-      hc          = "hydra-check";
-
       ssd         = "sudo smartctl -a /dev/sda";
       servers     = "cd /home/sircam/_devbox/ && devbox run caddy run --config Caddyfile";
       chrome      = "nix run github:sircam-html/chrome-sandbox --override-input nixpkgs nixpkgs 2>/dev/null";
@@ -89,11 +102,6 @@
       code        = "tmux has-session -t opencode 2>/dev/null; and echo '🤖 OpenCode is already active! Logs: tmux a -t opencode'; or tmux new-session -d -s opencode 'nix run github:sircam-html/opencode-sandbox --override-input nixpkgs nixpkgs 2>/dev/null'; or echo '❌ Failed to start session.'; and echo '🚀 OpenCode spawned! Refresh Zen at http://127.0.0.1:8642'";
       code-kill   = "tmux kill-session -t opencode && echo '🧹 OpenCode background web engine has been completely stopped!'";
       code-wipe   = "tmux kill-session -t opencode 2>/dev/null; rm -rf ~/.cache/opencode-sandbox && echo '💥 OpenCode workspace cache has been completely wiped back to a factory-clean slate!'";
-      fx          = "sudo chmod 755 ~/Downloads/ && sudo chown -R sircam:users ~/Downloads/ && sudo find ~/Downloads -type f -exec chmod 644 {} + && sudo find ~/Downloads -type d -exec chmod 755 {} +";
-      nv          = "nix run ~/nixos-conf/tracker --override-input nixpkgs-unstable github:NixOS/nixpkgs/nixpkgs-unstable --override-input nixpkgs-stable github:NixOS/nixpkgs/nixos-26.05 2>/dev/null";
-      nv11        = "NIXPKGS_ALLOW_UNFREE=1 nix eval github:NixOS/nixpkgs/nixos-25.11#linuxPackages.nvidiaPackages.legacy_580.version";
-      nvun        = "NIXPKGS_ALLOW_UNFREE=1 nix eval github:NixOS/nixpkgs/nixos-unstable#linuxPackages.nvidiaPackages.legacy_580.version";
-      nv26        = "NIXPKGS_ALLOW_UNFREE=1 nix eval github:NixOS/nixpkgs/nixos-26.05#linuxPackages.nvidiaPackages.legacy_580.version";
     };
   };
 }
