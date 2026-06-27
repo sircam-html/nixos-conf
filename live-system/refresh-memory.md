@@ -82,7 +82,8 @@ Declarative, modular NixOS 26.05 with pinned NVIDIA 580.159.04 via mkDriver, rep
 - **Fix merged**: PR #534770 by Atemu — `doCheck = stdenv.hostPlatform.system != "i686-linux"` on `release-26.05`
 - Fix commit `1cf99b9` merged 2026-06-24 at 12:44 UTC; user's `update` at 11:36 AST missed it by ~1h
 - Decision: wait for channel to rebuild with fix, then re-run `update`
-- Current system: stable on old generation, unaffected
+- **RESOLVED Jun 27**: `nix-channel --update` pulled fix commit `4062d36e`; `nr` rebuilt clean, `hm -b backup` succeeded, `update.fish` removed from funcsave, all functions back to HM-managed symlinks
+- Post-reboot: system healthy on new generation, NVIDIA driver loaded, KDE working
 
 ### Jun 25 2026 — Post-Blackout Recovery & Cleanup
 - Re-ran `update` post-blackout; OpenBLAS x86_64 built and all 30 tests passed (no hang)
