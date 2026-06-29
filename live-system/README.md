@@ -37,7 +37,7 @@ sudo curl -o /etc/nixos/nvidia.nix https://raw.githubusercontent.com/sircam-html
 
 ## Highlights
 
-- NVIDIA driver pinned to `580.159.04` for Pascal GPU stability
+- NVIDIA driver pinned to `580.173.02` via mkDriver
 - Plymouth animated boot splash with NixOS logo
 - US keyboard layout with AltGr international variant for Spanish accents and ñ
 - Steam with Proton for gaming
