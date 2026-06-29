@@ -9,7 +9,7 @@ Personal NixOS setup running **Stable 26.05** with KDE Plasma 6 on a hybrid AMD/
 | OS         | NixOS 26.05 (Yarara) x86_64                   |
 | Desktop    | KDE Plasma 6.6 (Wayland)                      |
 | CPU        | AMD (pstate + schedutil)                      |
-| GPU        | NVIDIA GTX 1070 Ti (driver pinned 580.173.02) |
+| GPU        | NVIDIA GTX 1070 Ti (pinned drivers 580.173.02) |
 | Bootloader | systemd-boot + Plymouth (nixos-bgrt theme)    |
 | Shell      | Fish (with aliases)                           |
 
