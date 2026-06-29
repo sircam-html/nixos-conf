@@ -100,6 +100,7 @@
 
   # ── Allow Unfree Packages ─────────────────────────────────────────────────────
   nixpkgs.config.allowUnfree = true;
+  nixpkgs.config.permittedInsecurePackages = [ "pnpm-10.29.2" ];
 
   # ── System Packages ───────────────────────────────────────────────────────────
   environment.systemPackages = with pkgs; [
