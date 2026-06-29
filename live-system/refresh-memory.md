@@ -5,7 +5,7 @@
 ## (Call me Cristian)
 
 ## Goal
-Declarative, modular NixOS 26.05 with pinned NVIDIA 580.173.02 via mkDriver, reproducible via GitHub backups (HTTPS, no SSH), deployable on fresh machines with 5 curls.
+Declarative, modular NixOS 26.05 with pinned NVIDIA 580.159.04 via mkDriver, reproducible via GitHub backups (HTTPS, no SSH), deployable on fresh machines with 5 curls.
 
 ## Constraints
 - NixOS 26.05 stable, KDE Plasma 6, Wayland, AMD CPU + NVIDIA GTX 1070 Ti
@@ -20,7 +20,7 @@ Declarative, modular NixOS 26.05 with pinned NVIDIA 580.173.02 via mkDriver, rep
 
 ## Config Files & Imports
 - `/etc/nixos/configuration.nix` — imports: `./hardware-configuration.nix`, `./nvidia.nix`, `./amd-cpu.nix`
-- `/etc/nixos/nvidia.nix` — NVIDIA module: `mkDriver` pin 580.173.02, all 5 hashes, `modesetting.enable = true`
+- `/etc/nixos/nvidia.nix` — NVIDIA module: `mkDriver` pin 580.159.04, all 5 hashes, `modesetting.enable = true`
 - `/etc/nixos/amd-cpu.nix` — AMD CPU: `amd_pstate=passive`, microcode, TLP, power-profiles-daemon off, no sleep/hibernation
 - `~/.config/home-manager/home.nix` — imports `./fish.nix`
 - `~/.config/home-manager/fish.nix` — all aliases + backup function
@@ -99,6 +99,14 @@ Declarative, modular NixOS 26.05 with pinned NVIDIA 580.173.02 via mkDriver, rep
 - SSD healthy: 860 QVO 1TB, 87% wear, ~95TB written, 3.58yr on, PASSED
 - System stable; pending: `hm` full rebuild when binary cache warms
 
+### Jun 29 2026 — NVIDIA 580.173.02 + Cleanup
+- **Driver bumped**: `580.159.04` → `580.173.02` via mkDriver (all hashes updated)
+- `nr` succeeded after hash update; reboot applied new driver
+- `nv` tool redesigned: smart version check — shows `⚠` when new driver available, `✓` when up to date
+- All stale `580.159.04` references purged from `README.md`, `nvidia.nix`, `refresh-memory.md`
+- README conflict resolved: `pinned driver` → `pinned drivers`
+- System at revision `4062d36e`, driver 580.173.02, OpenBLAS fix included, all clean
+
 ### Jun 21 2026
 - `systemd.timers.fix-downloads-perms` removed (didn't work long-term); back to manual `fx`
 - `gt` alias removed
@@ -155,7 +163,7 @@ sudo curl -o /etc/nixos/nvidia.nix https://raw.githubusercontent.com/sircam-html
 
 ## Quick Reference
 - `nv` output: clean box with `=`, mkDriver version only (no hashes)
-- Latest `nv`: Unstable 580.173.02, Stable 580.142
+- Latest `nv`: Unstable 580.159.04, Stable 580.142
 - `code-wipe && code-kill` before clean OpenCode tests
 - Session is isolated per login — shared credentials don't share chats
 - `ssd` → full health report; current: Wear 87%, 3.5yr on, ~88TB written, PASSED

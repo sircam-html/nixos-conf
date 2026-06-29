@@ -20,7 +20,7 @@
     ];
   };
 
-  # ── NVIDIA Driver (Pinned 580.173.02) ────────────────────────────────────────────
+  # ── NVIDIA Driver (Pinned 580.159.04) ────────────────────────────────────────────
   hardware.nvidia = {
     modesetting.enable = true;
     nvidiaSettings     = true;
