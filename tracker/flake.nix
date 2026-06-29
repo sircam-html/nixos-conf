@@ -21,20 +21,17 @@
         apps.default = {
           type = "app";
           program = "${pkgs-unstable.writeShellScriptBin "nvidia-580-info" ''
-            RULER=$(printf '%64s' | tr ' ' '=')
+            DRIVER=$(nvidia-smi --query-gpu=driver_version --format=csv,noheader 2>/dev/null || echo "unknown")
+            RULER=$(printf '%52s' | tr ' ' '=')
             echo "$RULER"
-            echo "  Last mkDriver version available — update your hashes now!"
-            echo "$RULER"
-            echo "  package = config.boot.kernelPackages.nvidiaPackages.mkDriver {"
-            echo "    version = \"${lu.version}\";"
-            echo "  };"
-            echo ""
+            if [ "${lu.version}" != "$DRIVER" ]; then
+              printf "  ⚠ New mkDriver version:  %s\n" "${lu.version}"
+            else
+              printf "  ✓ Current driver up to date:  %s\n" "${lu.version}"
+            fi
             echo "$RULER"
             printf "  Unstable: %-20s  Stable: %s\n" "${lu.version}" "${ls.version}"
             printf "  Kernel:   %-20s  Running: %s\n" "${pkgs-unstable.linuxPackages.kernel.version}" "$(uname -r)"
-            echo "$RULER"
-            echo "  Copy the block above, paste into nvidia.nix,"
-            echo "  then fetch fresh hashes from nixpkgs master."
             echo "$RULER"
           ''}/bin/nvidia-580-info";
         };
