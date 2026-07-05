@@ -65,6 +65,7 @@ in {
     # Dev / Productivity
     hydra-check
     devbox
+    p7zip
     htop
     tmux
     git
