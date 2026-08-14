@@ -1,4 +1,4 @@
-# NixOS Configuration / Pinned Nvidia Drivers 580.173.02
+# NixOS Configuration / Pinned Nvidia Drivers 580.178.04
 
 Personal NixOS setup running **Stable 26.05** with KDE Plasma 6 on a hybrid AMD/NVIDIA system.
 
@@ -9,14 +9,14 @@ Personal NixOS setup running **Stable 26.05** with KDE Plasma 6 on a hybrid AMD/
 | OS         | NixOS 26.05 (Yarara) x86_64                   |
 | Desktop    | KDE Plasma 6.6 (Wayland)                      |
 | CPU        | AMD (pstate + schedutil)                      |
-| GPU        | NVIDIA GTX 1070 Ti (pinned drivers 580.173.02) |
+| GPU        | NVIDIA GTX 1070 Ti (pinned drivers 580) |
 | Bootloader | systemd-boot + Plymouth (nixos-bgrt theme)    |
 | Shell      | Fish (with aliases)                           |
 
 ## Structure
 
 - **`configuration.nix`** — System base: bootloader, kernel, networking, services
-- **`nvidia.nix`** — NVIDIA driver module (pinned 580.173.02 via mkDriver)
+- **`nvidia.nix`** — NVIDIA driver module (pinned 580.178.04 via mkDriver)
 - **`amd-cpu.nix`** — AMD CPU module: pstate, TLP, power management
 - **`fish.nix`** — Fish shell aliases and custom functions
 - **`home.nix`** — User level: all apps managed via Home Manager (100% pure)
@@ -37,7 +37,7 @@ sudo curl -o /etc/nixos/nvidia.nix https://raw.githubusercontent.com/sircam-html
 
 ## Highlights
 
-- NVIDIA driver pinned to `580.173.02` via mkDriver
+- NVIDIA driver pinned to `580.178.04` via mkDriver
 - Plymouth animated boot splash with NixOS logo
 - US keyboard layout with AltGr international variant for Spanish accents and ñ
 - Steam with Proton for gaming
