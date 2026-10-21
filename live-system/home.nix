@@ -3,11 +3,6 @@
 { config, pkgs, ... }:
 
 let
-  # ── Zen Browser ───────────────────────────────────────────────────────────────
-  zen = import (builtins.fetchTarball
-    "https://github.com/youwen5/zen-browser-flake/archive/master.tar.gz"
-  ) { inherit pkgs; };
-
   # ── Bottles (remove warning popup) ───────────────────────────────────────────
   bottlesNoWarning = pkgs.bottles.override {
     removeWarningPopup = true;
@@ -59,6 +54,7 @@ in {
     wine
 
     # Browsers
+    firefox
     discord
     ferdium
 
@@ -83,7 +79,6 @@ in {
     nerd-fonts.fira-code
 
   ]) ++ [
-    zen.default
   ];
 
   # ── Programs ──────────────────────────────────────────────────────────────────
