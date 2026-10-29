@@ -17,6 +17,7 @@ Declarative, modular NixOS 26.05 with pinned NVIDIA 580.159.04 via mkDriver, rep
 ## Repos
 - **NixOS**: `github:sircam-html/nixos-conf` (public) — `live-system/`, `extras/`, `tracker/`
 - **Guix**: `codeberg.org/SIRCAM/Guix_configuration` — `live-system/`, `extra/` (Nix-in-Guix hybrid)
+- **Azoth Launcher**: `github:sircam-html/azoth-launcher` (public) — flake packaging Azoth Launcher (New World fan server) from `github:KyzaBOY/azoth-launcher`; Wails/WebKitGTK 4.1 + Windows patcher, runs via `steam-run` + `umu-launcher`
 
 ## Config Files & Imports
 - `/etc/nixos/configuration.nix` — imports: `./hardware-configuration.nix`, `./nvidia.nix`, `./amd-cpu.nix`
@@ -45,6 +46,7 @@ Declarative, modular NixOS 26.05 with pinned NVIDIA 580.159.04 via mkDriver, rep
 - `trim` → full cleanup
 - `chrome` / `code` → ephemeral sandboxes (--override-input for latest versions)
 - `code-kill` / `code-wipe` → stop / wipe OpenCode
+- `Azoth` → run Azoth Launcher ephemeral: `env GDK_BACKEND=x11 NIXPKGS_ALLOW_UNFREE=1 nix run github:sircam-html/azoth-launcher --impure --refresh --no-write-lock-file`
 
 ## OpenCode Sandbox (`github:sircam-html/opencode-sandbox`)
 - Original state: credentials printed at launch (`opencode` / `admin-sandbox-token`)
@@ -117,6 +119,20 @@ Declarative, modular NixOS 26.05 with pinned NVIDIA 580.159.04 via mkDriver, rep
 - opencode indicator missing in web UI — transient glitch, engine unaffected
 - `home.backupFileExtension = "bak"` attempted in `home.nix` — option doesn't exist in standalone HM. Use `hm -b backup` if file conflicts appear
 
+### Oct 29 2026 — Azoth Launcher Flake (Solved)
+- Purpose: run Azoth Launcher (New World fan server) on NixOS; used to join the project's **Live playtests**, not for regular play
+- Error on Play: `Couldn't start the game: azoth-patcher.exe does not match this launcher.`
+- **Fixed**: added `dontStrip = true;` — commit `2a16534` pushed, verified working (root cause in Bugs & Fixes)
+- README rewritten with run instructions — commit `9fbfc68`; documents `NIXPKGS_ALLOW_UNFREE=1 nix run github:sircam-html/azoth-launcher --impure`
+- **Run locally**: `Azoth` alias (declarative in `fish.nix`)
+- **Friend test**: `NIXPKGS_ALLOW_UNFREE=1 nix run github:sircam-html/azoth-launcher --impure` (needs x86_64-linux, flakes, ~2GB, New World install)
+- **RESOLVED**: `Azoth` alias folded into `fish.nix` with the working flags (`GDK_BACKEND=x11 … --refresh --no-write-lock-file`); funcsave leftover `~/.config/fish/functions/Azoth.fish` deleted; `hm` applied
+- HM puts aliases under `status is-interactive`, so `fish -lc 'type Azoth'` won't find it — check with `fish -ic 'type Azoth'`
+- First Play shows `Setting up Proton (first time only)…` — normal, umu creates the Wine prefix; game launched flawlessly after the fix
+- **Gateway stays `127.0.0.1:6000` on purpose** (Cristian's decision): neutral default until the devs announce a Live playtest. Official launcher bakes `71.211.172.176:6000`, but do **not** change it now
+- **Playtest day**: edit the two `release.env` lines in `flake.nix` (`GATEWAY_HOST` / `GATEWAY_PORT` with the host the devs announce), commit + push, then `Azoth` picks it up via `--refresh` — no reinstall needed
+- Upstream `azoth-src` stays pinned in `flake.lock`; updates are deliberate, not automatic (see Key Decisions)
+
 ## Key Decisions
 - `mkDriver` over `legacy_580` — channel-independent pinning
 - User/sudo/autologin stays in `configuration.nix` (not worth extracting)
@@ -126,6 +142,8 @@ Declarative, modular NixOS 26.05 with pinned NVIDIA 580.159.04 via mkDriver, rep
 - Password/credential experiments reverted to original `admin-sandbox-token`
 - No "Wanna try it" section in sandbox README
 - Dreadmyst sandbox flake tested, game server unreachable, repo deleted and aliases removed
+- No auto-update workflow for `azoth-src` — upstream bumps are done manually with Bhu (`nix flake update azoth-src`, review lock diff, build, fix `vendorHash` if needed) so breakage is caught in real time instead of landing on `main`
+- Azoth gateway stays `127.0.0.1:6000` by choice — the flake is for **Live playtests** only, so the real gateway host gets swapped in temporarily when the devs announce a test
 
 ## Fresh Restore (bootstrap)
 ```bash
@@ -145,6 +163,14 @@ sudo curl -o /etc/nixos/nvidia.nix https://raw.githubusercontent.com/sircam-html
 - **Event**: Browser couldn't download files because `/home/sircam/Downloads` had permissions `drw-r--r--` (missing `x` bit, making it untraversable).
 - **Root cause**: `fx` alias ran `chmod 755 ~/Downloads/` then immediately `chmod -R 644 ~/Downloads/`, which recursively set the directory itself back to 644. Each `fx` run fixed then broke itself.
 - **Solution**: Replaced blanket `chmod -R 644` with `find ~/Downloads -type f -exec chmod 644 + && find ~/Downloads -type d -exec chmod 755 +`. Files stay read-only (safe from accidental delete), directories stay traversable.
+
+### Nix strip breaks the patcher hash (Oct 29 2026)
+- **Event**: Azoth Launcher built from the flake refused to start the game: `azoth-patcher.exe does not match this launcher`
+- **Root cause**: upstream `scripts/release-linux.sh` builds `azoth-patcher.exe`, computes its sha256, and bakes it into the launcher (`-X main.patcherSHA256`). Nix's `fixupPhase` strip hook (`strip.sh`) strips **every** file in `bin/` with no ELF check, so it rewrote the Windows PE patcher *after* hashing → guaranteed mismatch
+- **Proof**: launcher's baked hash `f62773fa…` vs shipped patcher `8db3001f…`; `strip -S -p` alone changed a fresh patcher `37043d0f…` → `f4536b68…`; official v0.2.0 release is self-consistent, confirming the check was fine
+- **Fetching the baked hash**: symbols are stripped (nixpkgs defaults to `-s -w`), so parse the ELF string headers directly (a `.data` `{ptr,len}` pair pointing at the 64-byte hex) instead of `nm`/`strings`
+- **Solution**: `dontStrip = true;` in the derivation. Rebuild verified both hashes equal `f62773fa…`. Harmless: both Go binaries already use `-s -w`
+- **General lesson**: any Nix package that verifies the sha256 of a sibling file will break if the stdenv strip hook rewrites that file — use `dontStrip` (or `stripExclude`)
 
 ## Clean History
 - `chrome-sandbox` and `opencode-sandbox` repos: orphan branch force-pushed, single-commit history (no trace of experiments)
