@@ -66,9 +66,16 @@
         cd "$REPO"
         if test (count (git status --porcelain)) -ge 1
           git add -A
+          or begin; echo "❌ git add failed"; return 1; end
           git commit -m "$MSG"
-          git push origin main
-          echo "✓ Configs backed up to GitHub"
+          or begin; echo "❌ git commit failed"; return 1; end
+          if git push origin main
+            echo "✓ Configs backed up to GitHub"
+          else
+            echo "❌ Push rejected — the remote has newer commits. Run:"
+            echo "   cd ~/nixos-conf && git pull --rebase && git push"
+            return 1
+          end
         else
           echo "✓ No changes — already up to date"
         end

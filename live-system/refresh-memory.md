@@ -132,6 +132,7 @@ Declarative, modular NixOS 26.05 with pinned NVIDIA 580.159.04 via mkDriver, rep
 - **Gateway stays `127.0.0.1:6000` on purpose** (Cristian's decision): neutral default until the devs announce a Live playtest. Official launcher bakes `71.211.172.176:6000`, but do **not** change it now
 - **Playtest day**: edit the two `release.env` lines in `flake.nix` (`GATEWAY_HOST` / `GATEWAY_PORT` with the host the devs announce), commit + push, then `Azoth` picks it up via `--refresh` — no reinstall needed
 - Upstream `azoth-src` stays pinned in `flake.lock`; updates are deliberate, not automatic (see Key Decisions)
+- **`bu` false-success bug fixed** in `fish.nix`: `backup` ignored `git push`'s exit status and always printed `✓ Configs backed up to GitHub`. Now it checks `git add`/`git commit`/`git push` and, on rejection, says the remote has newer commits and suggests `cd ~/nixos-conf && git pull --rebase && git push`. Applies to both copies (`fish.nix` line 31 and `live-system/fish.nix` after `bu`)
 
 ## Key Decisions
 - `mkDriver` over `legacy_580` — channel-independent pinning
