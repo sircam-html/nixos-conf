@@ -135,6 +135,14 @@ Declarative, modular NixOS 26.05 with pinned NVIDIA 580.159.04 via mkDriver, rep
 - **Playtest sin editar el flake (PUSHEADO, commit `342bb66`)**: leer `AZOTH_GATEWAY_HOST` / `AZOTH_GATEWAY_PORT` con `builtins.getEnv` (helper `envOr` con fallback `127.0.0.1` / `6000`) y usarlos en el `release.env` del `buildPhase`. Requiere `--impure` (el alias `Azoth` ya lo lleva). Uso el día del test: `set -x AZOTH_GATEWAY_HOST 1.2.3.4`, `set -x AZOTH_GATEWAY_PORT 6000`, luego `Azoth` — sin commits ni reconstruir a mano; el host queda fijado hasta cerrar la terminal (`set -e` para limpiarlo). Probado con `203.0.113.7:7777`: el binario lleva ese host/puerto incrustados y el par launcher/patcher sigue coincidiendo (`f62773fa…`). Sin las variables el build sigue siendo `127.0.0.1:6000` (comprobado por eval del flake remoto)
 - **`bu` false-success bug fixed** in `fish.nix`: `backup` ignored `git push`'s exit status and always printed `✓ Configs backed up to GitHub`. Now it checks `git add`/`git commit`/`git push` and, on rejection, says the remote has newer commits and suggests `cd ~/nixos-conf && git pull --rebase && git push`. Applies to both copies (`fish.nix` line 31 and `live-system/fish.nix` after `bu`)
 
+### Oct 29 2026 — Fresh Install Validated in VM + README Fix
+- Cristian tested the full quick install in a **virt-manager VM**; system installed and booted fine
+- **VM setup gotchas**: `systemd-boot` needs UEFI/OVMF firmware; `./nvidia.nix` must be commented out of `imports` (no NVIDIA GPU in a VM → Xorg won't start)
+- **Only real failure**: the README block's last step `&& home-manager switch` → `command not found`. Root cause: `configuration.nix` does not enable Home Manager as a NixOS module, so the CLI does not exist on a clean install. He installed it manually with the three channel/`nix-shell` commands and everything worked — **diagnosis confirmed by the test**, not just by reading files
+- **README fixed** (commit `7e68294`, pushed): the copy block now ends at `sudo nixos-rebuild switch`; new section **"Home Manager (first time only)"** with the three commands + `home-manager switch` + a `master` note
+- VM used `master` → Home Manager reports **26.11-pre** (dev branch for the next release). His PC stays on `release-26.05` → `26.05-pre`; nothing changed on his system
+- Deliberately **not** applied (robustness only, not blockers): `curl -fL` (a 404 currently writes an error page into a `.nix` file) and `mkdir -p ~/Documents` (missing dir aborts the `&&` chain before the rebuild). Do not add them unless he asks
+
 ## Key Decisions
 - `mkDriver` over `legacy_580` — channel-independent pinning
 - User/sudo/autologin stays in `configuration.nix` (not worth extracting)
@@ -146,6 +154,8 @@ Declarative, modular NixOS 26.05 with pinned NVIDIA 580.159.04 via mkDriver, rep
 - Dreadmyst sandbox flake tested, game server unreachable, repo deleted and aliases removed
 - No auto-update workflow for `azoth-src` — upstream bumps are done manually with Bhu (`nix flake update azoth-src`, review lock diff, build, fix `vendorHash` if needed) so breakage is caught in real time instead of landing on `main`
 - Azoth gateway stays `127.0.0.1:6000` by choice — the flake is for **Live playtests** only, so the real gateway host gets swapped in temporarily when the devs announce a test
+- **Explain one thing at a time.** Cristian (53) says he doesn't process Nix details fast; long technical dumps confuse him. No hashes, store paths or drv comparisons unless they change a decision. He prefers plain "what it does / why it matters" and asking "más simple" if needed
+- **He validates before trusting**: testing in a VM caught the `home-manager` gap that reading the files only predicted. Prefer "let's test it" over long theoretical analysis, and change things only when he explicitly asks
 
 ## Fresh Restore (bootstrap)
 ```bash
@@ -157,8 +167,18 @@ sudo curl -o /etc/nixos/nvidia.nix https://raw.githubusercontent.com/sircam-html
   && curl -o ~/.config/home-manager/home.nix https://raw.githubusercontent.com/sircam-html/nixos-conf/main/live-system/home.nix \
   && curl -o ~/.config/home-manager/fish.nix https://raw.githubusercontent.com/sircam-html/nixos-conf/main/live-system/fish.nix \
   && curl -o ~/Documents/refresh-memory.md https://raw.githubusercontent.com/sircam-html/nixos-conf/main/live-system/refresh-memory.md \
-  && sudo nixos-rebuild switch && home-manager switch
+  && sudo nixos-rebuild switch
+
+# Home Manager — first time only: configuration.nix does NOT install it,
+# so `home-manager switch` fails with "command not found" on a clean system.
+nix-channel --add https://github.com/nix-community/home-manager/archive/release-26.05.tar.gz home-manager
+nix-channel --update
+nix-shell '<home-manager>' -A install
+home-manager switch
 ```
+
+- Same block is in `live-system/README.md` (commit `7e68294`), which stops at `nixos-rebuild` and documents the Home Manager step separately
+- `release-26.05` = stable, matches NixOS 26.05 and his PC (`26.05-pre`). `master` also works but reports the next release (`26.11-pre`) and drifts on every `nix-channel --update`
 
 ## Bugs & Fixes
 ### `fx` self-sabotage (Jun 12 2026)
