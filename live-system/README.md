@@ -32,8 +32,34 @@ sudo curl -o /etc/nixos/nvidia.nix https://raw.githubusercontent.com/sircam-html
   && curl -o ~/.config/home-manager/home.nix https://raw.githubusercontent.com/sircam-html/nixos-conf/main/live-system/home.nix \
   && curl -o ~/.config/home-manager/fish.nix https://raw.githubusercontent.com/sircam-html/nixos-conf/main/live-system/fish.nix \
   && curl -o ~/Documents/refresh-memory.md https://raw.githubusercontent.com/sircam-html/nixos-conf/main/live-system/refresh-memory.md \
-  && sudo nixos-rebuild switch && home-manager switch
+  && sudo nixos-rebuild switch
 ```
+
+### Home Manager (first time only)
+
+`configuration.nix` does not enable Home Manager, so the `home-manager` command
+(used by the `hm` alias) does not exist on a fresh system. The last line of the
+block above intentionally stops after `nixos-rebuild` — install Home Manager
+once with these three commands, matching your NixOS release:
+
+```bash
+nix-channel --add https://github.com/nix-community/home-manager/archive/release-26.05.tar.gz home-manager
+nix-channel --update
+nix-shell '<home-manager>' -A install
+```
+
+Then apply the user configuration:
+
+```bash
+home-manager switch
+```
+
+After this, `hm` works as usual. If Home Manager complains about existing files,
+run `home-manager switch -b backup`.
+
+> For the development branch instead of 26.05, replace `release-26.05` with
+> `master` in the first command. That tracks the next release and will report a
+> newer version (e.g. `26.11-pre`).
 
 ## Highlights
 
