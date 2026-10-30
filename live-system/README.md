@@ -1,4 +1,4 @@
-# NixOS Configuration / Pinned Nvidia Drivers 580.178.04
+# NixOS Configuration / Pinned Nvidia Drivers 580.196.07
 
 Personal NixOS setup running **Stable 26.05** with KDE Plasma 6 on a hybrid AMD/NVIDIA system.
 
@@ -16,7 +16,7 @@ Personal NixOS setup running **Stable 26.05** with KDE Plasma 6 on a hybrid AMD/
 ## Structure
 
 - **`configuration.nix`** — System base: bootloader, kernel, networking, services
-- **`nvidia.nix`** — NVIDIA driver module (pinned 580.178.04 via mkDriver)
+- **`nvidia.nix`** — NVIDIA driver module (pinned 580.196.07 via mkDriver)
 - **`amd-cpu.nix`** — AMD CPU module: pstate, TLP, power management
 - **`fish.nix`** — Fish shell aliases and custom functions
 - **`home.nix`** — User level: all apps managed via Home Manager (100% pure)
@@ -63,7 +63,7 @@ run `home-manager switch -b backup`.
 
 ## Highlights
 
-- NVIDIA driver pinned to `580.178.04` via mkDriver
+- NVIDIA driver pinned to `580.196.07` via mkDriver
 - Plymouth animated boot splash with NixOS logo
 - US keyboard layout with AltGr international variant for Spanish accents and ñ
 - Steam with Proton for gaming
@@ -96,9 +96,9 @@ run `home-manager switch -b backup`.
 | `ver`      | Show NixOS + Home Manager versions               |
 | `ps`       | Restart KDE Plasma shell                         |
 | `chrome`   | Run Chrome sandbox (ephemeral)                   |
-| `chrome-wipe` | Wipe Chrome sandbox cache                    |
-| `code`     | Start OpenCode sandbox (tmux)                    |
-| `code-kill`| Stop OpenCode sandbox                            |
-| `code-wipe`| Wipe OpenCode sandbox cache                      |
+| `chrome-wipe` | Wipe Chrome sandbox cache                     |
+| `csteam`   | Start and open Steam console                     |
+| `rf`       | exec fish                                        |
+| `oc`       | Excute OpenCode AI                               |
 | `servers`  | Start devbox Caddy servers                       |
-| `hc`       | hydra-check                                      |
+| `Azoth`    | Excute Azoth Launcher                            |

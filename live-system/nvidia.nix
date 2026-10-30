@@ -26,8 +26,8 @@
     nvidiaSettings     = true;
     open               = false;
     package            = config.boot.kernelPackages.nvidiaPackages.mkDriver {
-      version            = "580.178.04";
-      sha256_64bit       = "sha256-WXWobuRb/8tib1GuM9EWmxCBhqLqR61lHnLxP6S21vk=";
+      version            = "580.196.07";
+      sha256_64bit       = "sha256-CqsFGNtTz3PEEtx/MrvIUMqV6DnYkj0N5L/0LByRac4=";
       sha256_aarch64     = "sha256-iRLyYjvHyDl2Xzb87j20o1MYNKLK/zql1JwSWbI3Kus=";
       openSha256         = "sha256-zsNmjZW0cyZWPp3vDT3mNeqAo0hS0M7e9Tbvwvij+F4=";
       settingsSha256     = "sha256-KcrGHoR+ZMdsFyI4myU8/eVls2f8GkNSX/j2JnZndyM=";
