@@ -5,7 +5,7 @@
 ## (Call me Cristian)
 
 ## Goal
-Declarative, modular NixOS 26.05 with pinned NVIDIA 580.159.04 via mkDriver, reproducible via GitHub backups (HTTPS, no SSH), deployable on fresh machines with 5 curls.
+Declarative, modular NixOS 26.05 with NVIDIA pinned to the **580.x branch** via mkDriver — the last branch that supports the GTX 10xx (Pascal) series; 581+ drops it. Reproducible via GitHub backups (HTTPS, no SSH), deployable on fresh machines with 5 curls.
 
 ## Constraints
 - NixOS 26.05 stable, KDE Plasma 6, Wayland, AMD CPU + NVIDIA GTX 1070 Ti
@@ -21,7 +21,7 @@ Declarative, modular NixOS 26.05 with pinned NVIDIA 580.159.04 via mkDriver, rep
 
 ## Config Files & Imports
 - `/etc/nixos/configuration.nix` — imports: `./hardware-configuration.nix`, `./nvidia.nix`, `./amd-cpu.nix`
-- `/etc/nixos/nvidia.nix` — NVIDIA module: `mkDriver` pin 580.159.04, all 5 hashes, `modesetting.enable = true`
+- `/etc/nixos/nvidia.nix` — NVIDIA module: `mkDriver` pinned to the **580.x branch** with an explicit version + hashes (currently **580.196.07**), all 5 hashes, `modesetting.enable = true`
 - `/etc/nixos/amd-cpu.nix` — AMD CPU: `amd_pstate=passive`, microcode, TLP, power-profiles-daemon off, no sleep/hibernation
 - `~/.config/home-manager/home.nix` — imports `./fish.nix`
 - `~/.config/home-manager/fish.nix` — all aliases + backup function
@@ -143,8 +143,20 @@ Declarative, modular NixOS 26.05 with pinned NVIDIA 580.159.04 via mkDriver, rep
 - VM used `master` → Home Manager reports **26.11-pre** (dev branch for the next release). His PC stays on `release-26.05` → `26.05-pre`; nothing changed on his system
 - Deliberately **not** applied (robustness only, not blockers): `curl -fL` (a 404 currently writes an error page into a `.nix` file) and `mkdir -p ~/Documents` (missing dir aborts the `&&` chain before the rebuild). Do not add them unless he asks
 
+### Nov 1 2026 — OpenCode Token Tuning
+- `~/.config/opencode/opencode.json` still had V1-era compaction fields `prune` and `reserved: 16000`, which **do nothing in OpenCode V2**
+- Replaced with the V2 shape: `keep: { tokens: 8000 }` + `buffer: "20%"` → compacts at 80% of the window and keeps less recent detail
+- **Why**: checked usage first (`opencode stats --cost --days 30`) → **$0.00** / 30 days, and `opencode/big-pickle` costs $0 per token. Model choice saves nothing here; the real limit is tokens against the free quota, so the file is the only lever that cuts actual consumption
+- Config hot-reloads on save — no restart needed
+- If long sessions start forgetting details too early, raise `keep.tokens` to `12000`
+- Note: `opencode` is **not on PATH**; the CLI lives in the nix store (`/nix/store/*-opencode-2.2.1/bin/opencode`). Path changes on rebuild, so don't hardcode it in scripts
+- Deliberately **not** done: a global `~/.config/opencode/AGENTS.md` with brevity rules (helps, but it's behavior, not tuning) — add only if Cristian asks
+
 ## Key Decisions
 - `mkDriver` over `legacy_580` — channel-independent pinning
+- **Stay on the 580 branch — never 581+**: the GTX 1070 Ti is Pascal, and NVIDIA ended support for the 10 series after the 580 branch. Staying inside 580 allows patch/security bumps while making an unsupported major jump impossible. Hard compatibility limit, not a preference — do not suggest upgrading past 580
+- **`mkDriver` is what makes the pin immune to the channel**: it takes an explicit version and its 5 hashes, so if nixpkgs ships 581 tomorrow, `nr` and `update` change nothing on his machine. A driver change only happens by manually editing `nvidia.nix` — that is the whole point of the technique, not a side effect
+- Current pinned patch is **580.196.07** (a snapshot, not a target) — bumping inside 580 is fine
 - User/sudo/autologin stays in `configuration.nix` (not worth extracting)
 - Public cloud flakes for Chrome + OpenCode; private local for tracker
 - `nv` uses `--override-input` for live data each run; shows only version (no hash noise)
@@ -211,7 +223,7 @@ home-manager switch
 
 ## Quick Reference
 - `nv` output: clean box with `=`, mkDriver version only (no hashes)
-- Latest `nv`: Unstable 580.159.04, Stable 580.142
+- `nv` version boxes are a point-in-time snapshot — the real target is the **580 branch**, never a fixed patch number (currently 580.196.07)
 - `code-wipe && code-kill` before clean OpenCode tests
 - Session is isolated per login — shared credentials don't share chats
 - `ssd` → full health report; current: Wear 87%, 3.5yr on, ~88TB written, PASSED
