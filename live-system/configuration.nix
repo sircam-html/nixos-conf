@@ -19,9 +19,7 @@
     theme         = "nixos-bgrt";
     themePackages = [ pkgs.nixos-bgrt-plymouth ];
   };
-  boot.initrd.systemd.enable = true;
   boot.consoleLogLevel       = 0;
-  boot.initrd.verbose        = false;
 
   # ── Kernel Params ─────────────────────────────────────────────────────────────
   boot.kernelParams = [ "quiet" "splash" "udev.log_level=3" ];
