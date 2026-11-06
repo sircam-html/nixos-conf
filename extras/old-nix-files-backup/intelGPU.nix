@@ -48,7 +48,9 @@ Pasos para activar Re-BAR en tu Gigabyte B550:
 
 2. Si la BIOS inicia en el "Easy Mode" (Modo Fácil), presiona la tecla F2 para cambiar al Advanced Mode (Modo Avanzado).
 
-3. Ve con las flechas del teclado a la pestaña Settings (en el menú superior).
+3. Desactiva el soporte heredado: 
+Ve a la pestaña Boot y cambia CSM Support a Disabled (esto es seguro ahora, 
+ya que la Intel Arc es 100% nativa UEFI, a diferencia de tu vieja GTX 690).
 
 4. Entra en la sección llamada IO Ports.
 
