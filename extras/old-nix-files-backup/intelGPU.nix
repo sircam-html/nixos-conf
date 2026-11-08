@@ -32,6 +32,7 @@
   environment.sessionVariables = {
     LIBVA_DRIVER_NAME = "iHD";       # Forces the system to use the modern Intel VA-API driver
     XDG_SESSION_TYPE  = "wayland";   # Keeps your native Wayland environment active
+    NIXOS_OZONE_WL    = "1";         # Habilita soporte nativo de Wayland en apps Electron/Chromium
   };
 }
 
