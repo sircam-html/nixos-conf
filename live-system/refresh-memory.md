@@ -17,7 +17,7 @@ Declarative, modular NixOS 26.05 with NVIDIA pinned to the **580.x branch** via 
 ## Repos
 - **NixOS**: `github:sircam-html/nixos-conf` (public) — `live-system/`, `extras/`, `tracker/`
 - **Guix**: `codeberg.org/SIRCAM/Guix_configuration` — `live-system/`, `extra/` (Nix-in-Guix hybrid)
-- **Azoth Launcher**: `github:sircam-html/azoth-launcher` (public) — flake packaging Azoth Launcher (New World fan server) from `github:KyzaBOY/azoth-launcher`; Wails/WebKitGTK 4.1 + Windows patcher, runs via `steam-run` + `umu-launcher`
+- **Azoth Launcher**: `github:sircam-html/azoth-launcher` (public) — flake running the **official 1.0.x Windows build under Wine** (see Nov 10 2026); the old Wails/WebKitGTK native build from `github:KyzaBOY/azoth-launcher` is retired (upstream source stopped at v0.2.0)
 
 ## Config Files & Imports
 - `/etc/nixos/configuration.nix` — imports: `./hardware-configuration.nix`, `./nvidia.nix`, `./amd-cpu.nix`
@@ -46,7 +46,7 @@ Declarative, modular NixOS 26.05 with NVIDIA pinned to the **580.x branch** via 
 - `trim` → full cleanup
 - `chrome` / `code` → ephemeral sandboxes (--override-input for latest versions)
 - `code-kill` / `code-wipe` → stop / wipe OpenCode
-- `Azoth` → run Azoth Launcher ephemeral: `env GDK_BACKEND=x11 NIXPKGS_ALLOW_UNFREE=1 nix run github:sircam-html/azoth-launcher --impure --refresh --no-write-lock-file`
+- `Azoth` → run Azoth Launcher ephemeral: `env GDK_BACKEND=x11 NIXPKGS_ALLOW_UNFREE=1 nix run github:sircam-html/azoth-launcher --impure --refresh --no-write-lock-file` (flags harmless but unnecessary since Nov 10; plain `nix run` is enough now)
 
 ## OpenCode Sandbox (`github:sircam-html/opencode-sandbox`)
 - Original state: credentials printed at launch (`opencode` / `admin-sandbox-token`)
@@ -130,9 +130,9 @@ Declarative, modular NixOS 26.05 with NVIDIA pinned to the **580.x branch** via 
 - HM puts aliases under `status is-interactive`, so `fish -lc 'type Azoth'` won't find it — check with `fish -ic 'type Azoth'`
 - First Play shows `Setting up Proton (first time only)…` — normal, umu creates the Wine prefix; game launched flawlessly after the fix
 - **Gateway stays `127.0.0.1:6000` on purpose** (Cristian's decision): neutral default until the devs announce a Live playtest. Official launcher bakes `71.211.172.176:6000`, but do **not** change it now
-- **Playtest day**: edit the two `release.env` lines in `flake.nix` (`GATEWAY_HOST` / `GATEWAY_PORT` with the host the devs announce), commit + push, then `Azoth` picks it up via `--refresh` — no reinstall needed
+- **Playtest day**: edit the two `release.env` lines in `flake.nix` (`GATEWAY_HOST` / `GATEWAY_PORT` with the host the devs announce), commit + push, then `Azoth` picks it up via `--refresh` — no reinstall needed *(obsolete since Nov 10 2026 — the official build bakes its own gateway)*
 - Upstream `azoth-src` stays pinned in `flake.lock`; updates are deliberate, not automatic (see Key Decisions)
-- **Playtest sin editar el flake (PUSHEADO, commit `342bb66`)**: leer `AZOTH_GATEWAY_HOST` / `AZOTH_GATEWAY_PORT` con `builtins.getEnv` (helper `envOr` con fallback `127.0.0.1` / `6000`) y usarlos en el `release.env` del `buildPhase`. Requiere `--impure` (el alias `Azoth` ya lo lleva). Uso el día del test: `set -x AZOTH_GATEWAY_HOST 1.2.3.4`, `set -x AZOTH_GATEWAY_PORT 6000`, luego `Azoth` — sin commits ni reconstruir a mano; el host queda fijado hasta cerrar la terminal (`set -e` para limpiarlo). Probado con `203.0.113.7:7777`: el binario lleva ese host/puerto incrustados y el par launcher/patcher sigue coincidiendo (`f62773fa…`). Sin las variables el build sigue siendo `127.0.0.1:6000` (comprobado por eval del flake remoto)
+- **Playtest sin editar el flake (PUSHEADO, commit `342bb66`)**: leer `AZOTH_GATEWAY_HOST` / `AZOTH_GATEWAY_PORT` con `builtins.getEnv` (helper `envOr` con fallback `127.0.0.1` / `6000`) y usarlos en el `release.env` del `buildPhase`. *(Obsoleto desde Nov 10 2026: el flake ya no compila el source, corre el exe oficial de Windows bajo Wine.)* Requiere `--impure` (el alias `Azoth` ya lo lleva). Uso el día del test: `set -x AZOTH_GATEWAY_HOST 1.2.3.4`, `set -x AZOTH_GATEWAY_PORT 6000`, luego `Azoth` — sin commits ni reconstruir a mano; el host queda fijado hasta cerrar la terminal (`set -e` para limpiarlo). Probado con `203.0.113.7:7777`: el binario lleva ese host/puerto incrustados y el par launcher/patcher sigue coincidiendo (`f62773fa…`). Sin las variables el build sigue siendo `127.0.0.1:6000` (comprobado por eval del flake remoto)
 - **`bu` false-success bug fixed** in `fish.nix`: `backup` ignored `git push`'s exit status and always printed `✓ Configs backed up to GitHub`. Now it checks `git add`/`git commit`/`git push` and, on rejection, says the remote has newer commits and suggests `cd ~/nixos-conf && git pull --rebase && git push`. Applies to both copies (`fish.nix` line 31 and `live-system/fish.nix` after `bu`)
 
 ### Oct 29 2026 — Fresh Install Validated in VM + README Fix
@@ -152,6 +152,21 @@ Declarative, modular NixOS 26.05 with NVIDIA pinned to the **580.x branch** via 
 - Note: `opencode` is **not on PATH**; the CLI lives in the nix store (`/nix/store/*-opencode-2.2.1/bin/opencode`). Path changes on rebuild, so don't hardcode it in scripts
 - Deliberately **not** done: a global `~/.config/opencode/AGENTS.md` with brevity rules (helps, but it's behavior, not tuning) — add only if Cristian asks
 
+### Nov 10 2026 — Azoth 1.0.29: official Windows build under Wine
+- Upstream moved: 1.0.x releases live in `KyzaBOY/azoth-launcher-releases` (installers only, **no source**), and they are **Electron Windows apps**. The source repo `KyzaBOY/azoth-launcher` is stale at v0.2.0 (Oct 22) and there is **no Linux build and no 1.0.29 source anywhere public** — checked tags, branches, Actions runs, and `latest-linux.yml` (404)
+- So the old flake had nothing to update to: bumping `azoth-src` would have rebuilt the same October code
+- **New approach — run the official Windows payload under Wine, ephemerally via `nix run`**
+  - `fetchurl` the official exe (sha256 pinned); `p7zip` unpacks the NSIS payload `$PLUGINSDIR/app-64.7z` at build time (the installer itself is never run — silent install fails)
+  - runs with `wineWow64Packages.stable`: **his profile wine is 32-bit only → "Bad EXE format"**; wow64 is required for the 64-bit Electron app
+  - flags `--no-sandbox --disable-gpu`; `WINEDLLOVERRIDES="mscoree,mshtml="`; own prefix at `~/.local/share/azoth-launcher-wine`
+  - app is copied into the prefix (writable) so the launcher's own updater can write; `.version` marker re-copies when the version changes
+  - `steam-run`, umu-launcher, WebKitGTK and the Go/Wails build are all gone from the closure
+- **Verified**: built and launched 1.0.29 locally (window opened and stayed up), then killed and cleaned up; Cristian also confirmed it works **from GitHub** with `nix run github:sircam-html/azoth-launcher`
+- **Future bumps**: change `version` and the hash — `nix hash convert --to sri sha256 <exe>` (or just copy the correct hash Nix prints on mismatch). Only moving part: upstream changing the installer format
+- **Anyone with Nix + flakes** can `nix run github:sircam-html/azoth-launcher`; Wine comes from the flake, nothing installed; x86_64-linux only; commit `flake.lock` so everyone gets the same Wine
+- **Caveat**: the game now starts inside that Wine prefix, not through umu/Proton like the native build — validate on playtest day
+- Supersedes the Oct 29 `builtins.getEnv` gateway trick and the `AZOTH_GATEWAY_HOST/PORT` instructions: the official build bakes its own gateway, so no env override exists anymore
+
 ## Key Decisions
 - `mkDriver` over `legacy_580` — channel-independent pinning
 - **Stay on the 580 branch — never 581+**: the GTX 1070 Ti is Pascal, and NVIDIA ended support for the 10 series after the 580 branch. Staying inside 580 allows patch/security bumps while making an unsupported major jump impossible. Hard compatibility limit, not a preference — do not suggest upgrading past 580
@@ -164,8 +179,8 @@ Declarative, modular NixOS 26.05 with NVIDIA pinned to the **580.x branch** via 
 - Password/credential experiments reverted to original `admin-sandbox-token`
 - No "Wanna try it" section in sandbox README
 - Dreadmyst sandbox flake tested, game server unreachable, repo deleted and aliases removed
-- No auto-update workflow for `azoth-src` — upstream bumps are done manually with Bhu (`nix flake update azoth-src`, review lock diff, build, fix `vendorHash` if needed) so breakage is caught in real time instead of landing on `main`
-- Azoth gateway stays `127.0.0.1:6000` by choice — the flake is for **Live playtests** only, so the real gateway host gets swapped in temporarily when the devs announce a test
+- No auto-update workflow for `azoth-src` — upstream bumps are done manually with Bhu (`nix flake update azoth-src`, review lock diff, build, fix `vendorHash` if needed) so breakage is caught in real time instead of landing on `main` — **retired Nov 10 2026**: the flake no longer builds `azoth-src`, it runs the official Windows exe under Wine
+- Azoth gateway stays `127.0.0.1:6000` by choice — the flake is for **Live playtests** only, so the real gateway host gets swapped in temporarily when the devs announce a test — **obsolete since Nov 10 2026**: the official 1.0.x build bakes the real gateway itself
 - **Explain one thing at a time.** Cristian (53) says he doesn't process Nix details fast; long technical dumps confuse him. No hashes, store paths or drv comparisons unless they change a decision. He prefers plain "what it does / why it matters" and asking "más simple" if needed
 - **He validates before trusting**: testing in a VM caught the `home-manager` gap that reading the files only predicted. Prefer "let's test it" over long theoretical analysis, and change things only when he explicitly asks
 
@@ -227,5 +242,8 @@ home-manager switch
 - `code-wipe && code-kill` before clean OpenCode tests
 - Session is isolated per login — shared credentials don't share chats
 - `ssd` → full health report; current: Wear 87%, 3.5yr on, ~88TB written, PASSED
+- **Azoth bump**: change `version` + hash in the flake, then `nix run ~/Downloads`; app state lives in `~/.local/share/azoth-launcher-wine` (delete it to start clean)
+- **Azoth on any NixOS**: `nix run github:sircam-html/azoth-launcher` — Wine comes from the flake, nothing installed (needs flakes, x86_64-linux only)
+- Azoth 1.0.x is a Windows-only Electron app: no Linux build upstream, so the flake runs the Windows exe under Wine
 - **REMINDER**: After `hm` runs successfully, delete `~/.config/fish/functions/update.fish` so fish.nix's `update` alias takes effect
 
