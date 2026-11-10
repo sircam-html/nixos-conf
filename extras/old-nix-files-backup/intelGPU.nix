@@ -39,7 +39,7 @@
 
 
 
-* Usar sudo nixos-rebuild boot para aplciar nueva configuración la cual creara un generation listo para la Arc.
+# Usar sudo nixos-rebuild boot para aplciar nueva configuración la cual creara un generation listo para la Arc.
 
 
 #
