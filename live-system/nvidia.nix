@@ -1,51 +1,39 @@
 { config, pkgs, ... }:
 
 {
-  # ── Extra Module Packages ─────────────────────────────────────────────────────
-  boot.extraModulePackages = [ config.hardware.nvidia.package ];
-
-  # ── Graphics Stack ────────────────────────────────────────────────────────────
+  # ── Graphics Stack ──────────────────────────────────────────────────────────
   hardware.graphics = {
     enable      = true;
-    enable32Bit = true;
+    enable32Bit = true; # Required for Steam / Wine / 32-bit games
+
     extraPackages = with pkgs; [
-      libva-vdpau-driver
-      libvdpau-va-gl
-      nvidia-vaapi-driver
-    ];
-    extraPackages32 = with pkgs.pkgsi686Linux; [
-      libva-vdpau-driver
-      libvdpau-va-gl
-      nvidia-vaapi-driver
+      nvidia-vaapi-driver # VA-API hardware video decoding on NVIDIA
     ];
   };
 
-  # ── NVIDIA Driver (Pinned 580 Set) ────────────────────────────────────────────
+  # ── NVIDIA Driver (Production + KDE Wayland) ────────────────────────────────
   hardware.nvidia = {
-    modesetting.enable = true;
-    nvidiaSettings     = true;
-    open               = false;
-    package            = config.boot.kernelPackages.nvidiaPackages.mkDriver {
-      version            = "580.196.07";
-      sha256_64bit       = "sha256-CqsFGNtTz3PEEtx/MrvIUMqV6DnYkj0N5L/0LByRac4=";
-      sha256_aarch64     = "sha256-iRLyYjvHyDl2Xzb87j20o1MYNKLK/zql1JwSWbI3Kus=";
-      openSha256         = "sha256-zsNmjZW0cyZWPp3vDT3mNeqAo0hS0M7e9Tbvwvij+F4=";
-      settingsSha256     = "sha256-KcrGHoR+ZMdsFyI4myU8/eVls2f8GkNSX/j2JnZndyM=";
-      persistencedSha256 = "sha256-vDawiy52GB8JABUKZDiQUc8uda8p/7jCFW7rTu6QMa4=";
-    };
+    modesetting.enable = true; # Required for Wayland (enables nvidia-drm.modeset=1)
+
+    # Only affects suspend/hibernate; suspend is disabled, so keep it off
+    powerManagement.enable = false;
+
+    nvidiaSettings = true;
+
+    # Open kernel modules (supported on Ampere / RTX 3070)
+    # Fallback: set to false if you hit instability
+    open = true;
+
+    package = config.boot.kernelPackages.nvidiaPackages.production;
   };
 
-  # ── X Server (NVIDIA) ─────────────────────────────────────────────────────────
-  services.xserver = {
-    enable       = true;
-    videoDrivers = [ "nvidia" ];
-  };
+  # ── Driver Loading ──────────────────────────────────────────────────────────
+  # Still required on Wayland: this is what loads the NVIDIA kernel module
+  services.xserver.videoDrivers = [ "nvidia" ];
 
-  # ── Session Variables (Wayland + NVIDIA) ──────────────────────────────────────
+  # ── Session Variables ───────────────────────────────────────────────────────
   environment.sessionVariables = {
-    GBM_BACKEND               = "nvidia-drm";
-    LIBVA_DRIVER_NAME         = "nvidia";
-    __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-    XDG_SESSION_TYPE          = "wayland";
+    LIBVA_DRIVER_NAME = "nvidia"; # Use nvidia-vaapi-driver for VA-API
+    NIXOS_OZONE_WL    = "1";      # Native Wayland for Electron / Chromium apps
   };
 }
