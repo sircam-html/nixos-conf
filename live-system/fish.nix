@@ -109,6 +109,10 @@
       csteam      = "steam steam://open/console";
       rf          = "exec fish";
       oc          = "nix run nixpkgs#opencode";
+      fddo        = "find ~ -type d -name 'White_Dragon_Temple' 2>/dev/null";
+
+      # Check Mhz of Ram
+      # nix-shell -p dmidecode --run "sudo dmidecode -t memory | grep -i speed"
 
       # Fixed with the correct syntax for Nix / Fish
       Azoth       = "env GDK_BACKEND=x11 NIXPKGS_ALLOW_UNFREE=1 nix run github:sircam-html/azoth-launcher --impure --refresh --no-write-lock-file";
