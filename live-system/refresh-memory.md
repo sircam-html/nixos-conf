@@ -5,10 +5,10 @@
 ## (Call me Cristian)
 
 ## Goal
-Declarative, modular NixOS 26.05 with NVIDIA pinned to the **580.x branch** via mkDriver — the last branch that supports the GTX 10xx (Pascal) series; 581+ drops it. Reproducible via GitHub backups (HTTPS, no SSH), deployable on fresh machines with 5 curls.
+Declarative, modular NixOS 26.05 with NVIDIA **production driver + open kernel modules** for the **RTX 3070 (Ampere)**. Reproducible via GitHub backups (HTTPS, no SSH), deployable on fresh machines with 5 curls.
 
 ## Constraints
-- NixOS 26.05 stable, KDE Plasma 6, Wayland, AMD CPU + NVIDIA GTX 1070 Ti
+- NixOS 26.05 stable, KDE Plasma 6, Wayland, AMD CPU + NVIDIA RTX 3070 (Ampere, open kernel modules)
 - Fish shell; all user config in Home Manager
 - `nixpkgs.config.allowUnfree = true`
 - Ephemeral flakes for Chrome, opencode, safe-update (scoped `allowUnfreePredicate`)
@@ -18,10 +18,11 @@ Declarative, modular NixOS 26.05 with NVIDIA pinned to the **580.x branch** via 
 - **NixOS**: `github:sircam-html/nixos-conf` (public) — `live-system/`, `extras/`, `tracker/`
 - **Guix**: `codeberg.org/SIRCAM/Guix_configuration` — `live-system/`, `extra/` (Nix-in-Guix hybrid)
 - **Azoth Launcher**: `github:sircam-html/azoth-launcher` (public) — flake running the **official 1.0.x Windows build under Wine** (see Nov 10 2026); the old Wails/WebKitGTK native build from `github:KyzaBOY/azoth-launcher` is retired (upstream source stopped at v0.2.0)
+- **UT4 Launcher**: `github:sircam-html/utx-launcher` (public) — flake wrapping the **UT4 Community Launcher (NetcodePlus) 1.9.0 AppImage** with bundled Wine Staging, DXVK and Vulkan (see Nov 23 2026)
 
 ## Config Files & Imports
 - `/etc/nixos/configuration.nix` — imports: `./hardware-configuration.nix`, `./nvidia.nix`, `./amd-cpu.nix`
-- `/etc/nixos/nvidia.nix` — NVIDIA module: `mkDriver` pinned to the **580.x branch** with an explicit version + hashes (currently **580.196.07**), all 5 hashes, `modesetting.enable = true`
+- `/etc/nixos/nvidia.nix` — NVIDIA module for RTX 3070: `hardware.graphics.enable`/`enable32Bit`, `hardware.nvidia.modesetting.enable = true` (Wayland/KDE), `open = true` (Ampere supports open modules), `package = config.boot.kernelPackages.nvidiaPackages.production`, `nvidiaSettings = true`, `powerManagement.enable = false` (suspend disabled). Session vars: `LIBVA_DRIVER_NAME=nvidia`, `NIXOS_OZONE_WL=1`
 - `/etc/nixos/amd-cpu.nix` — AMD CPU: `amd_pstate=passive`, microcode, TLP, power-profiles-daemon off, no sleep/hibernation
 - `~/.config/home-manager/home.nix` — imports `./fish.nix`
 - `~/.config/home-manager/fish.nix` — all aliases + backup function
@@ -30,9 +31,6 @@ Declarative, modular NixOS 26.05 with NVIDIA pinned to the **580.x branch** via 
 ## Key Aliases
 - `bu` → backup 6 configs + refresh-memory.md to GitHub
 - `nv` → live NVIDIA tracker with version/update box (stderr suppressed)
-- `nv11` → quick legacy_580 version on nixos-25.11
-- `nvun` → quick legacy_580 version on nixos-unstable
-- `nv26` → quick legacy_580 version on nixos-26.05
 - `ssd` → sudo smartctl -a /dev/sda (SSD health report)
 - `fx` → fix Downloads permissions (chmod 755 + chown + find files 644 / dirs 755)
 - `an` → edit amd-cpu.nix
@@ -93,7 +91,7 @@ Declarative, modular NixOS 26.05 with NVIDIA pinned to the **580.x branch** via 
 - `hm` cancelled mid-OpenBLAS build (cache cold for some x86_64 packages)
 - **`update` alias fixed**: `nix-channel --update && sudo nix-channel --update && sudo nixos-rebuild switch && home-manager switch`
 - **`fx` and `nv` converted from aliases to Fish functions** in `fish.nix` (funcsave'd for immediate use)
-- **`nv11`, `nvun`, `nv26`, `hc` aliases removed** from `fish.nix`
+- **`hc` alias removed** from `fish.nix`
 - **`fs` alias removed** (was added unasked; emergency funcsave pattern kept for manual use)
 - **`funcsave` pattern proven**: works as escape hatch when `hm` can't run — alias + funcsave immediately persists aliases without Nix evaluation
 - Cleaned up leftover funcsave files on disk (`fs.fish`, `update.fish`)
@@ -101,13 +99,9 @@ Declarative, modular NixOS 26.05 with NVIDIA pinned to the **580.x branch** via 
 - SSD healthy: 860 QVO 1TB, 87% wear, ~95TB written, 3.58yr on, PASSED
 - System stable; pending: `hm` full rebuild when binary cache warms
 
-### Jun 29 2026 — NVIDIA 580.173.02 + Cleanup
-- **Driver bumped**: `580.159.04` → `580.173.02` via mkDriver (all hashes updated)
-- `nr` succeeded after hash update; reboot applied new driver
-- `nv` tool redesigned: smart version check — shows `⚠` when new driver available, `✓` when up to date
-- All stale `580.159.04` references purged from `README.md`, `nvidia.nix`, `refresh-memory.md`
-- README conflict resolved: `pinned driver` → `pinned drivers`
-- System at revision `4062d36e`, driver 580.173.02, OpenBLAS fix included, all clean
+### Jun 29 2026 — Cleanup
+- `nv` tool redesigned: smart version check — shows `⚠` when a new driver is available, `✓` when up to date
+- System at revision `4062d36e`, OpenBLAS fix included, all clean
 
 ### Jun 21 2026
 - `systemd.timers.fix-downloads-perms` removed (didn't work long-term); back to manual `fx`
@@ -167,11 +161,39 @@ Declarative, modular NixOS 26.05 with NVIDIA pinned to the **580.x branch** via 
 - **Caveat**: the game now starts inside that Wine prefix, not through umu/Proton like the native build — validate on playtest day
 - Supersedes the Oct 29 `builtins.getEnv` gateway trick and the `AZOTH_GATEWAY_HOST/PORT` instructions: the official build bakes its own gateway, so no env override exists anymore
 
+### Nov 23 2026 — UT4 Community Launcher flake (performance fixed)
+- Repo `github:sircam-html/utx-launcher`, public. Files pushed: `flake.nix`, `flake.lock`, `README.md` (commit `f03ebf4` verified from GitHub raw). The local working copy `~/Downloads/utx-launcher-main` was deleted afterwards; GitHub is now the only source.
+- Run: `nix run --refresh github:sircam-html/utx-launcher` (use `--refresh` after a push, otherwise Nix reuses the cached revision); plain `nix run github:sircam-html/utx-launcher` once cached.
+- Wraps the v1.9.0 AppImage with `appimageTools.wrapType2` (bwrap/FHS env). Bundles `wineWow64Packages.staging`, `dxvk`, `vulkan-loader`, `vulkan-tools`, WebKitGTK/GTK for the Tauri UI.
+- First-time setup inside the launcher: Wine runner dir → `~/.local/share/ut4-wine-runner`; UT4 install → `~/Documents/LocalGames/UnrealTournament/UnrealTournament`; prefix → `~/.local/share/ut4-wine-prefix`. Deleting `~/.config/org.netcodeplus.launcher` resets those settings.
+- **Root cause of the slowness + fix** (see Bugs & Fixes): on first launch the wrapper now copies real DXVK DLLs into the prefix (x64 → `drive_c/windows/system32`, x86 → `SysWOW64`), guarded by marker `.nix-dxvk-installed`; originals saved as `*.bak`. It also exports `WINEDLLOVERRIDES=d3d11,d3d10core,dxgi,d3d9=n,b`, `__GLX_VENDOR_LIBRARY_NAME=nvidia`, `VK_ICD_FILENAMES=/run/opengl-driver/share/vulkan/icd.d/nvidia_icd.json`, `WINEFSYNC=1`, `WINEDEBUG=-all`. Every value uses `${VAR:-default}`, so the shell can override it.
+- **Verified**: `vulkaninfo` inside the wrapper went from `NVIDIA GeForce RTX 3070` + **2× llvmpipe** to **only** NVIDIA; prefix `d3d11.dll` went from Wine builtin 1,096,436 bytes to real DXVK 11,533,971 bytes. Cristian confirmed normal game speed afterwards.
+- Clean-state test: removed `~/.config/org.netcodeplus.launcher`, `~/.local/share/ut4-wine-prefix`, `~/.local/share/ut4-wine-runner`, then ran from GitHub with `DXVK_HUD=devinfo,fps nix run --refresh ...` so the first-run path is exercised from zero.
+- HUD check: overlay must show the NVIDIA GPU, never `llvmpipe`. README documents an AMD override example (`radeon_icd.x86_64.json` + `__GLX_VENDOR_LIBRARY_NAME=mesa`) and the `--refresh` tip.
+- **Desktop entry**: `~/.local/share/applications/ut4-community-launcher.desktop` — same pattern as the Azoth one, `Exec=/run/current-system/sw/bin/bash -c 'exec /run/current-system/sw/bin/nix run github:sircam-html/utx-launcher >/dev/null 2>&1'`, `StartupWMClass=netcodeplus-launcher`. Icon copied from the extracted AppImage to `~/Pictures/Icons/ut4-launcher.png` so `nix gc` cannot break it. Log-out/in needed to pick it up (no `update-desktop-database` on this system).
+- **Safety**: no hardware/driver/system changes — only process env vars and files inside the user's Wine prefix. Fully reversible: delete the prefix (or just `.nix-dxvk-installed` + restore `*.bak`) or revert the flake. If a launch fails, change `>/dev/null 2>&1` in the desktop entry to `>/tmp/ut4-launcher.log 2>&1` to see errors.
+- **Hardware (Nov 23)**: this host reports `NVIDIA GeForce RTX 3070` (PCI `0x10de:0x2484`), driver `595.71.05`. `/etc/nixos/nvidia.nix` uses the **production** package with `open = true`. The UT4 flake uses the generic `/run/opengl-driver/...` ICD path, so it follows whatever driver is enabled.
+
+### Nov 23 2026 — `bu` push auth after fresh NixOS install
+- **Event**: `bu` cloned a new `~/nixos-conf`, committed fine (`e9e3b8a`), but `git push` failed: `Invalid username or token. Password authentication is not supported for Git operations.` plus `ksshaskpass`/QtKeychain warnings.
+- **Root cause**: the fresh NixOS install wiped the machine-local GitHub login. `~/.gitconfig` had only name/email, no `~/.git-credentials`, no `credential.helper`; nothing in the NixOS/Home Manager config ever stored it. GitHub HTTPS no longer accepts passwords — a token is required.
+- **Fix (one-time, token never in chat or repo)**: fine-grained PAT for repo `nixos-conf`, permission **Contents: Read and write**. In fish:
+  ```fish
+  read -s -P 'GitHub token: ' TOKEN
+  printf 'https://sircam-html:%s@github.com\n' $TOKEN > ~/.git-credentials
+  set -e TOKEN
+  chmod 600 ~/.git-credentials
+  git config --global credential.helper store
+  cd ~/nixos-conf && git push
+  ```
+- Local commit was safe — only the push failed; no need to re-clone or redo work. After the token is stored, `bu` is silent again.
+- **Misleading message**: `bu` prints "remote has newer commits — run git pull --rebase" for *any* push failure; it doesn't inspect the real error. If it appears, run plain `git push` first to see the actual cause.
+- **Decision**: do **not** add the credential helper declaratively to `home.nix` (Cristian declined); the token file stays local only.
+
 ## Key Decisions
-- `mkDriver` over `legacy_580` — channel-independent pinning
-- **Stay on the 580 branch — never 581+**: the GTX 1070 Ti is Pascal, and NVIDIA ended support for the 10 series after the 580 branch. Staying inside 580 allows patch/security bumps while making an unsupported major jump impossible. Hard compatibility limit, not a preference — do not suggest upgrading past 580
-- **`mkDriver` is what makes the pin immune to the channel**: it takes an explicit version and its 5 hashes, so if nixpkgs ships 581 tomorrow, `nr` and `update` change nothing on his machine. A driver change only happens by manually editing `nvidia.nix` — that is the whole point of the technique, not a side effect
-- Current pinned patch is **580.196.07** (a snapshot, not a target) — bumping inside 580 is fine
+- **NVIDIA = production package + open kernel modules** (`hardware.nvidia.open = true`): the RTX 3070 is Ampere, so open modules are supported. Driver version follows `config.boot.kernelPackages.nvidiaPackages.production`; no manual hash pinning to maintain
+- `hardware.nvidia.modesetting.enable = true` is required for KDE Wayland; `powerManagement.enable = false` because suspend/hibernate is disabled in `amd-cpu.nix`
+- `nv` tracks the live driver version from nixpkgs (unstable/stable) via `--override-input`; no hardcoded patch target to bump by hand
 - User/sudo/autologin stays in `configuration.nix` (not worth extracting)
 - Public cloud flakes for Chrome + OpenCode; private local for tracker
 - `nv` uses `--override-input` for live data each run; shows only version (no hash noise)
@@ -181,6 +203,7 @@ Declarative, modular NixOS 26.05 with NVIDIA pinned to the **580.x branch** via 
 - Dreadmyst sandbox flake tested, game server unreachable, repo deleted and aliases removed
 - No auto-update workflow for `azoth-src` — upstream bumps are done manually with Bhu (`nix flake update azoth-src`, review lock diff, build, fix `vendorHash` if needed) so breakage is caught in real time instead of landing on `main` — **retired Nov 10 2026**: the flake no longer builds `azoth-src`, it runs the official Windows exe under Wine
 - Azoth gateway stays `127.0.0.1:6000` by choice — the flake is for **Live playtests** only, so the real gateway host gets swapped in temporarily when the devs announce a test — **obsolete since Nov 10 2026**: the official 1.0.x build bakes the real gateway itself
+- **UT4 flake is ephemeral** like Azoth: nothing installed system-wide; all state lives in `~/.local/share/ut4-wine-*` and `~/.config/org.netcodeplus.launcher`. GPU pinning is env-only inside the wrapper, never a driver/system change. For non-NVIDIA GPUs override `VK_ICD_FILENAMES` + `__GLX_VENDOR_LIBRARY_NAME` instead of editing the flake
 - **Explain one thing at a time.** Cristian (53) says he doesn't process Nix details fast; long technical dumps confuse him. No hashes, store paths or drv comparisons unless they change a decision. He prefers plain "what it does / why it matters" and asking "más simple" if needed
 - **He validates before trusting**: testing in a VM caught the `home-manager` gap that reading the files only predicted. Prefer "let's test it" over long theoretical analysis, and change things only when he explicitly asks
 
@@ -221,6 +244,14 @@ home-manager switch
 - **Solution**: `dontStrip = true;` in the derivation. Rebuild verified both hashes equal `f62773fa…`. Harmless: both Go binaries already use `-s -w`
 - **General lesson**: any Nix package that verifies the sha256 of a sibling file will break if the stdenv strip hook rewrites that file — use `dontStrip` (or `stripExclude`)
 
+### UT4 ran extremely slow under Wine (Nov 23 2026)
+- **Event**: launcher opened fine and UT4 played, but at a crawl.
+- **Root cause 1 — DXVK was enabled but never installed**: the launcher generates a Lutris-style config with `WINEDLLOVERRIDES=d3d11,d3d10core,dxgi,d3d9=n,b` (i.e. "use native DXVK DLLs"), but the AppImage ships no DXVK DLLs and the setup never installed them. The prefix only had Wine's builtins (e.g. `d3d11.dll` = 1,096,436 bytes), so D3D11 went through wined3d/OpenGL.
+- **Root cause 2 — software GPU in the sandbox**: `appimageTools.wrapType2` runs in a bwrap/FHS env whose `/etc/profile` adds `/run/opengl-driver/share` to `XDG_DATA_DIRS`. `vulkaninfo` inside the wrapper listed the RTX 3070 **plus two Mesa `llvmpipe` devices** (one from the flake's `mesa` in `extraPkgs`, one from `/run/opengl-driver`), and libglvnd could select Mesa's `libGLX_mesa.so` instead of NVIDIA's.
+- **Proof**: `APPIMAGE_DEBUG_EXEC=vulkaninfo <wrapper>` (a built-in nixpkgs appimage hook) showed the device list before/after; DLL byte sizes confirmed builtin vs real DXVK.
+- **Solution**: install DXVK DLLs into the prefix once on wrapper startup (marker + `.bak` backups), set `WINEDLLOVERRIDES`, pin `__GLX_VENDOR_LIBRARY_NAME=nvidia` and `VK_ICD_FILENAMES=.../nvidia_icd.json`, enable `WINEFSYNC`. Verified only the NVIDIA GPU remains visible and Cristian reported normal speed.
+- **General lesson**: for Wine games in `wrapType2`/bwrap, check *both* that the DXVK DLLs are physically in the prefix **and** which Vulkan ICDs/GLX vendor the sandbox exposes — "DXVK is in extraPkgs" does not mean DXVK is active.
+
 ## Clean History
 - `chrome-sandbox` and `opencode-sandbox` repos: orphan branch force-pushed, single-commit history (no trace of experiments)
 - `chrome-sandbox` README: simplified to personal description, Chrome logo inline in heading
@@ -237,8 +268,8 @@ home-manager switch
 - `init-nix` function bootstraps Nix channels on fresh installs
 
 ## Quick Reference
-- `nv` output: clean box with `=`, mkDriver version only (no hashes)
-- `nv` version boxes are a point-in-time snapshot — the real target is the **580 branch**, never a fixed patch number (currently 580.196.07)
+- `nv` output: clean box with `=`, live production driver version only (no hashes)
+- `nv` boxes are a snapshot of nixpkgs unstable/stable at run time; the driver version simply follows the channel
 - `code-wipe && code-kill` before clean OpenCode tests
 - Session is isolated per login — shared credentials don't share chats
 - `ssd` → full health report; current: Wear 87%, 3.5yr on, ~88TB written, PASSED
@@ -246,4 +277,9 @@ home-manager switch
 - **Azoth on any NixOS**: `nix run github:sircam-html/azoth-launcher` — Wine comes from the flake, nothing installed (needs flakes, x86_64-linux only)
 - Azoth 1.0.x is a Windows-only Electron app: no Linux build upstream, so the flake runs the Windows exe under Wine
 - **REMINDER**: After `hm` runs successfully, delete `~/.config/fish/functions/update.fish` so fish.nix's `update` alias takes effect
+- **UT4**: `nix run --refresh github:sircam-html/utx-launcher` — AppImage launcher; first run installs DXVK into `~/.local/share/ut4-wine-prefix` and pins the NVIDIA ICD; `--refresh` only needed after a push
+- **UT4 speed check**: `DXVK_HUD=devinfo,fps nix run --refresh github:sircam-html/utx-launcher` → overlay must say NVIDIA, never `llvmpipe`
+- **UT4 clean slate**: delete `~/.config/org.netcodeplus.launcher` + `~/.local/share/ut4-wine-{prefix,runner}`, then run from GitHub (first-run setup returns)
+- **UT4 desktop icon**: `~/Pictures/Icons/ut4-launcher.png` (copied from AppImage, safe from `nix gc`); launcher entry in `~/.local/share/applications/ut4-community-launcher.desktop`
+- **`bu` push fails?**: don't trust "remote has newer commits" — run plain `git push` to see the real error. After a fresh install, a PAT must be stored once with `credential.helper store` (see Nov 23 2026)
 
